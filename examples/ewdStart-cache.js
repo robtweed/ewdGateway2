@@ -1,7 +1,7 @@
 var ewd = require('../lib/ewdGateway2');
 
 var params = {
-      poolSize: 2,
+      poolSize: 3,
       httpPort: 8080,
 	  https: {
 	    enabled: false,
