@@ -1,0 +1,26 @@
+<ext4:fragment>
+  <ext4:panel layout="vbox" align="stretch">
+    <ext4:chart id="memoryChart" animate="true" sessionName="memoryPlot" storeId="memoryHistory" width="100%" flex="1">
+      <ext4:axis type="Numeric" position="left" fields="['rss', 'heapTotal', 'heapUsed']" title="Memory (Mb)" grid="true" minimum="0" />
+      <ext4:axis type="Numeric" id="timeSlotAxis" position="bottom" fields="timeslot" grid="true" title="Time Interval" minimum="1" maximum="60"/>
+      <ext4:series type="line" axis="left" xField="timeslot" highlight="true" yField="rss" tips=".chartTip1" />
+      <ext4:series type="line" axis="left" xField="timeslot" yField="heapTotal" tips=".chartTip2" />
+      <ext4:series type="line" axis="left" xField="timeslot" yField="heapUsed" tips=".chartTip3" />
+      <ext4:legend position="right" />
+    </ext4:chart>
+
+    <ext4:formPanel height="70" width="100%" border="false" layout="hbox">
+      <ext4:slider id="interval" fieldLabel="Monitor Interval (sec)" labelWidth="150" width="600" value="0" increment="5" minValue="5" maxValue="1100">
+        <ext4:listeners>
+          <ext4:listener changecomplete="function(slider,value) {Ext.getCmp('intervalDisplay').setValue(value); EWD.sockets.sendMessage({type: 'setParameter', name: 'monitorInterval', value: value * 1000});}" />
+        </ext4:listeners>
+      </ext4:slider>
+      <ext4:textfield id="intervalDisplay" readonly="true" value="0" inputWidth="30" margin="0 0 0 10" />
+    </ext4:formPanel>
+
+      <ext4:listeners>
+        <ext4:listener afterrender="function() {Ext.getCmp('interval').setValue(logging.interval); Ext.getCmp('intervalDisplay').setValue(logging.interval);}" />
+      </ext4:listeners>
+
+  </ext4:panel>
+</ext4:fragment>

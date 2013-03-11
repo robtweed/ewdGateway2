@@ -1,0 +1,40 @@
+<ext4:fragment onBeforeRender="js:ewdGW2Mgr.processInfo">
+
+  <ext4:panel id="processPanel" width="100%" title="Process Information" border="false" layout="hbox">
+
+    <ext4:gridPanel title="Build Details" id="buildGrid" frame="true" width="370" sessionName="builds" storeId="buildStore">
+      <ext4:viewConfig markDirty="false" />
+      <ext4:gridcolumn text="Module" width="100" dataIndex="name" />
+      <ext4:gridcolumn text="Version/Build" width="250" dataIndex="version" />
+    </ext4:gridPanel>
+
+    <ext4:gridPanel title="Master Process: " id="qGrid" frame="true" width="170" sessionName="queue" storeId="queueStore">
+      <ext4:paneltool type="down" tooltip="Reset maximum" handler="function() {queueStore.getAt(0).set('max', 0);}" />
+      <ext4:toolbar dock="top">
+        <ext4:button text="Stop Node.js Process" handler="function() {exitNode();}" />
+      </ext4:toolbar>
+      <ext4:viewConfig markDirty="false" />
+      <ext4:gridcolumn text="Queue Length" width="80" dataIndex="length" />
+      <ext4:gridcolumn text="Maximum" width="70" dataIndex="max" />
+    </ext4:gridPanel>
+
+    <ext4:listeners>
+      <ext4:listener afterrender="function() {startConsole()}" />
+    </ext4:listeners>
+
+    <ext4:gridPanel title="Worker Processes:" id="childProcessGrid" frame="true" width="210" sessionName="childProcess" storeId="childProcesses">
+      <ext4:paneltool type="plus" tooltip="Add an new extra worker process" handler="function() {workerProcess('add');}" />
+      <ext4:paneltool type="minus" tooltip="Stop a worker process and reduce pool size by 1" handler="function() {workerProcess('remove');}" />
+      <ext4:viewConfig markDirty="false" />
+      <ext4:gridcolumn text="pid" width="50" sortable="false" hideable="false" dataIndex="pid" />
+      <ext4:gridcolumn text="Requests" width="70" dataIndex="noOfRequests" />
+      <ext4:booleancolumn text="Available" width="70" dataIndex="available" trueText="Yes" falseText="No" />
+    </ext4:gridPanel>
+
+  </ext4:panel>
+
+  <ext4:js at="bottom">
+    Ext.getCmp('northPanel').add(Ext.getCmp('processPanel'));
+  </ext4:js>
+
+</ext4:fragment>

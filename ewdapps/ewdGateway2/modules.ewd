@@ -1,0 +1,25 @@
+<ext4:fragment onBeforeRender="js:ewdGW2Mgr.getModules">
+  <ext4:panel layout="fit">
+    <ext4:treepanel title="Javascript Modules" id="moduleMenu" flex="1" width="100%" sessionName="modules" storeId="moduleStore">
+      <ext4:listeners>
+        <ext4:listener itemclick="function(node, record) {moduleHandler(record);}" />
+      </ext4:listeners>
+    </ext4:treepanel>
+  </ext4:panel>
+
+  <ext4:window title="Module Maintenance" id="moduleWindow" closeAction="hide" x="100" layout="fit" hidden="true">
+    <ext4:formPanel id="moduleForm" bodyPadding="10">
+      <ext4:fieldset title="Module Details">
+        <ext4:textfield id="moduleAppName" fieldLabel="Application: " allowBlank="false" value="" />
+        <ext4:textfield id="moduleName" fieldLabel="Module Name" allowBlank="false" value="" />
+        <ext4:textfield id="modulePath" fieldLabel="Filepath" allowBlank="false" value="" />
+      </ext4:fieldset>
+
+    <ext4:buttonGroup id="moduleBtnGroup" hidden="true" columns="1">
+      <ext4:button id="reloadModuleBtn" text="Reload" handler="function() {reloadModule();}" />
+    </ext4:buttonGroup>
+
+    </ext4:formPanel>
+  </ext4:window>
+
+</ext4:fragment>

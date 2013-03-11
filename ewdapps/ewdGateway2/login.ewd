@@ -1,0 +1,13 @@
+<ext4:fragment onBeforeRender="js:ewdGW2Mgr.login">
+
+  <ext4:js at="top">
+    EWD.sockets.log = false;
+    var ewdGateway2Password = Ext.getCmp('password').getValue();
+    Ext.getCmp("loginPanel").destroy();
+    EWD.sockets.getPage({
+      page: 'processInfo',
+      targetId: 'ewdNullId'
+    });
+  </ext4:js>
+
+</ext4:fragment>

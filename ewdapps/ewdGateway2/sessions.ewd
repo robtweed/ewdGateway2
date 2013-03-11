@@ -1,0 +1,24 @@
+<ext4:fragment onBeforeRender="js:ewdGW2Mgr.initialiseSessions">
+  <ext4:panel align="stretch" layout="hbox" id="sessionPanel">
+    
+    <ext4:listeners>
+      <ext4:listener afterrender="function() {setSessionGridHeight(); timedUpdate()}" />
+    </ext4:listeners>
+
+    <ext4:gridPanel id="sessionGrid" frame="true" scroll="true" width="520" sessionName="sessions" storeId="sessionGridStore">
+      <ext4:viewConfig markDirty="false" />
+      <ext4:gridcolumn text="Session Id" width="80" dataIndex="sessid" />
+      <ext4:gridcolumn text="Application" width="150" dataIndex="appName" />
+      <ext4:gridcolumn text="Expiry" width="200" dataIndex="expiry" />
+      <ext4:actionColumn width="50">
+        <ext4:icon icon="<?= #framework_rootPath ?>/examples/shared/icons/fam/delete.gif" getClass="function(v, m,rec) {if (rec.data.currentSession) return 'x-hide-display';}" tooltip="Close down EWD Session" handler="function(vw,rx,cx,item,ev,rec) {closeSession(rec.data.sessid);}" />
+        <ext4:icon icon="<?= #framework_rootPath ?>/examples/shared/icons/fam/folder_go.png" tooltip="Display EWD Session Contents" handler="function(vw,rx,cx,item,ev,rec) {getSessionData(rec.data.sessid);}" />
+      </ext4:actionColumn>
+    </ext4:gridPanel>
+
+    <ext4:panel id="sessionTreePanel" border="false" layout="fit" align="stretch">
+      <ext4:panel id="sessionTree" flex=1 />
+    </ext4:panel>
+
+  </ext4:panel>
+</ext4:fragment>

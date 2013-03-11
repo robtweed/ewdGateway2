@@ -1,0 +1,82 @@
+<ext4:container isFirstPage="true" title="ewdGateway2" webSockets="true" onBeforeRender="js:ewdGW2Mgr.initialise">
+  <ext4:requires>
+      <ext4:require moduleName="ewdGW2Mgr" cachePath="c:\\node\\ewdGW2Mgr.js" gtmPath="./ewdGW2Mgr.js" />
+  </ext4:requires>
+
+  <script type="text/javascript" src="/vista/js/ewdGW2.js" />
+
+  <ext4:viewPort layout="border">
+    <ext4:panel region="north" id="northPanel" height="250" resizable="true" overflowY="auto" title="ewdGateway2 Manager" autoheight="true" border="false" margins="0 0 5 0" />
+    <ext4:panel region="west" id="westPanel" resizable="true" collapsible="true" border="false" width="250" autoheight="true">
+      <ext4:layout type="accordion" titleCollapse="false" animate="true" activeOnTop="true" />
+      <ext4:panel id="devToolsPanel" title="Developer Tools Options">
+        <ext4:layout type="vbox" align="center" />
+        <ext4:defaults margin="10 0 0 0" />
+        <ext4:button id="devToolLogOnBtn" text="Console Logging On" handler="function(button) {devToolsLogging(button);}" />
+      </ext4:panel>
+      <ext4:panel id="modulePanel" title="Modules" addPage="modules" layout="fit" />
+    </ext4:panel>
+    <ext4:tabPanel region="center" id="centerPanel" resizable="true">
+      <ext4:panel id="mainPanel" Title="Live Node.js Console" layout="fit">
+        <ext4:panel layout="vbox" align="stretch">
+          <ext4:panel width="100%" flex="1" border="false" margin="5" id="console" overflowY="scroll" contentEl="consoleText" />
+
+          <ext4:formPanel title="Logging/Monitoring Settings" layout="column" height="100" width="100%" border="false">
+            <ext4:fieldSet title="Logging Level" columnWidth="0.4" layout="fit">
+              <ext4:radiogroup id="loggingLevel">
+                <ext4:radiofield boxLabel="None" name="level" inputValue="0" />
+                <ext4:radiofield boxLabel="Min" name="level" inputValue="1" />
+                <ext4:radiofield boxLabel="Med" name="level" inputValue="2" />
+                <ext4:radiofield boxLabel="Max" name="level" inputValue="3" />
+                <ext4:listeners>
+                  <ext4:listener change="function(radio, value) {setMonitorLevel(value.level);}" />
+                </ext4:listeners>
+              </ext4:radiogroup>
+            </ext4:fieldSet>
+            <ext4:fieldSet title="Logging Destination" columnWidth="0.6" layout="column">
+              <ext4:radiogroup id="logToGroup" columnWidth="0.4">
+                <ext4:radiofield boxLabel="Console" name="logTo" inputValue="console" />
+                <ext4:radiofield boxLabel="File" name="logTo" inputValue="file" />
+                <ext4:listeners>
+                  <ext4:listener change="function(radio, value) {setLogTo(value.logTo);}" />
+                </ext4:listeners>
+              </ext4:radiogroup>
+              <ext4:textfield id="logFilePath" columnWidth="0.45" value="" />
+              <ext4:splitbutton id="logFileOptionBtn" text="Options" hidden="true" columnWidth="0.15">
+                <ext4:buttonmenu>
+                  <ext4:menuitem text="Clear" tooltip="Clear down log file" handler="function() {clearLogFile()}" />
+                  <ext4:menuitem text="Change" tooltip="Change logging to the specified file" handler="function() {changeLogFile()}" />
+                </ext4:buttonmenu>
+              </ext4:splitbutton>
+            </ext4:fieldSet>
+          </ext4:formPanel>
+        </ext4:panel>
+      </ext4:panel>
+      <ext4:panel title="Memory Use" id="memoryChartPanel" addPage="memoryChart" layout="fit" />
+      <ext4:panel title="EWD Sessions" id="sessionTabPanel" addPage="sessions" layout="fit" />
+    </ext4:tabPanel>
+  </ext4:viewPort>
+
+  <ext4:modalwindow title="ewdGateway2 Manager" id="loginPanel" height="200" width="400" layout="fit" autoShow="true">
+    <ext4:formPanel bodyPadding="10">
+      <ext4:fieldset title="See ewdGateway2 startup file for password">
+        <ext4:textfield id="password" inputType="password" fieldLabel="Password" allowBlank="false" value="" />
+      </ext4:fieldset>
+      <ewd:comment>
+       <ext4:button text="Quick Login" handler="function() {Ext.getCmp('password').setValue('keepThisSecret!');}" />
+      </ewd:comment>
+     <ext4:submitbutton text="Login" nextPage="login" />
+    </ext4:formPanel>
+  </ext4:modalwindow>
+  
+  <ext4:gridPanel title="Memory Utilisation" renderto="false" id="memoryGrid" frame="true" width="200" sessionName="memory" storeId="memoryGridStore">
+    <ext4:viewConfig markDirty="false" />
+    <ext4:gridcolumn text="Type" width="80" dataIndex="type" />
+    <ext4:numbercolumn text="Used (Mb)" width="100" dataIndex="mb" />
+  </ext4:gridPanel>
+
+  <ext4:html>
+    <div id="consoleText"></div>
+  </ext4:html>
+
+</ext4:container>
