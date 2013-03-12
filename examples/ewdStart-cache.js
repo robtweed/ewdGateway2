@@ -1,4 +1,4 @@
-var ewd = require('../lib/ewdGateway2');
+var ewd = require('ewdgateway2');
 
 var params = {
       poolSize: 2,
@@ -24,7 +24,7 @@ var params = {
         namespace: "USER",
         outputFilePath:"c:\\node\\",
       },
-	  childProcessPath: '../lib/ewdQWorker.js',
+      childProcessPath: 'c:\\node\\node_modules\\ewdgateway2\\\\lib\\ewdQWorker.js',
       traceLevel: 2,
       silentStart: false,
       webServerRootPath: 'c:\\node\\www',
