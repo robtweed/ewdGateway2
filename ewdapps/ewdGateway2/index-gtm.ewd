@@ -1,6 +1,6 @@
 <ext4:container isFirstPage="true" title="ewdGateway2" webSockets="true" onBeforeRender="js:ewdGW2Mgr.initialise">
   <ext4:requires>
-      <ext4:require moduleName="ewdGW2Mgr" cachePath="c:\\node\\ewdGW2Mgr.js" gtmPath="./ewdGW2Mgr.js" />
+      <ext4:require moduleName="ewdGW2Mgr" cachePath="c:\\node\\ewdGW2Mgr.js" gtmPath="~/www/node/ewdGW2Mgr.js" />
   </ext4:requires>
 
   <script type="text/javascript" src="/vista/js/ewdGW2.js" />
@@ -62,9 +62,6 @@
       <ext4:fieldset title="See ewdGateway2 startup file for password">
         <ext4:textfield id="password" inputType="password" fieldLabel="Password" allowBlank="false" value="" />
       </ext4:fieldset>
-      <ewd:comment>
-       <ext4:button text="Quick Login" handler="function() {Ext.getCmp('password').setValue('keepThisSecret!');}" />
-      </ewd:comment>
      <ext4:submitbutton text="Login" nextPage="login" />
     </ext4:formPanel>
   </ext4:modalwindow>
