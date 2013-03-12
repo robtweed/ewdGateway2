@@ -1,6 +1,6 @@
 <ext4:container isFirstPage="true" title="ewdGateway2" webSockets="true" onBeforeRender="js:ewdGW2Mgr.initialise">
   <ext4:requires>
-      <ext4:require moduleName="ewdGW2Mgr" cachePath="c:\\node\\ewdGW2Mgr.js" gtmPath="~/www/node/ewdGW2Mgr.js" />
+      <ext4:require moduleName="ewdGW2Mgr" cachePath="c:\\node\\ewdGW2Mgr.js" gtmPath="/home/vista/www/node/ewdGW2Mgr.js" />
   </ext4:requires>
 
   <script type="text/javascript" src="/vista/js/ewdGW2.js" />
