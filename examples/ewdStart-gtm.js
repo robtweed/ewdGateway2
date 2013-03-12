@@ -1,4 +1,4 @@
-var ewd = require('./ewdGateway2');
+var ewd = require('./node_modules/ewdgateway2/lib/ewdGateway2');
 
 var params = {
   poolSize: 4,
