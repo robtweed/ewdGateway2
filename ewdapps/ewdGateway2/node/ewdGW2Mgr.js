@@ -2,7 +2,7 @@
 module.exports = {
 
     initialise: function(ewd) {
-      var path = '/ext-4.1';
+      var path = 'http://cdn.sencha.io/ext-4.1.1-gpl';
       if (ewd.database === 'gtm') path = '/vista/ext-4.1';
       ewd.session.$('framework_rootPath')._value = path;
       var chart = ewd.session.$('memoryPlot');
