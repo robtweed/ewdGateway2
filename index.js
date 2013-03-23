@@ -1,3 +1,3 @@
 
-module.exports = require("./lib/ewdGateway2");
+module.exports = require("./lib/ewdGlobals");
 
