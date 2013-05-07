@@ -25,7 +25,7 @@ var params = {
   webServerRootPath: '',
   logTo: 'console',
   logFile: '/home/vista/www/node/ewdLog.txt',
-  logHTTP: true,
+  logHTTP: false,
   monitorInterval: 30000,
   management: {
     password: 'keepThisSecret!'

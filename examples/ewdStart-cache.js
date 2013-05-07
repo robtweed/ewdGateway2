@@ -30,7 +30,7 @@ var params = {
       webServerRootPath: 'c:\\node\\www',
       logTo: 'console',
       logFile: 'c:\\node\\ewdLog.txt',
-	  logHTTP: true,
+      logHTTP: false,
       monitorInterval: 30000,
       ewdQPath: './ewdQ',
       management: {
@@ -39,11 +39,5 @@ var params = {
 };
 
 ewd.start(params,function(gateway) {
-  //console.log("version = " + gateway.version());
-  
-   gateway.messageHandler.testit = function(request) {
-    console.log("*!*!*!*!*! Processing the testit message " + request.message + "; User's EWD token:" + request.token);
-	gateway.sendSocketMsg({token: request.token, type: "alert", message: "Node.js handled your request"});
-  };
   
 });
