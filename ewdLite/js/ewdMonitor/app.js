@@ -211,6 +211,11 @@ var getGlobalSubscripts = function(params) {
 };
 
 var deleteGlobalNode = function(node) {
+  //EWD.node = node;
+  if (node.raw.type === 'globalName') {
+    node.raw.globalName = node.raw.text;
+	node.raw.subscripts = '[]';
+  }
   var ref = node.raw.globalName + node.raw.subscripts;
   Ext.Msg.confirm('Attention!', 'Are you sure you want to delete ' + ref, function(button) {
     if (button === 'yes') {
