@@ -771,6 +771,14 @@ EWD.ext4 = {
                 xtype: "panel",
 				items: [
                   {  flex: 1,
+                     tbar: [
+                       {  xtype: 'button', 
+                          text: 'Refresh',
+                          handler: function() {
+                            EWD.sockets.sendMessage({type: 'getGlobals'});
+                          }
+                       }
+                     ],
                      id: "globalMenu",
                      rootVisible: true,
                      root: {
@@ -808,6 +816,60 @@ EWD.ext4 = {
                      }
                   }
 				]             
+             },
+             {  id: "exportTabPanel",
+                //layout: "fit",
+                title: 'Export/Import',
+                xtype: "panel",
+				items: [
+                  {  //flex: 1,
+                     bodyPadding: 10,
+                     height: 150,
+                     xtype: "form",
+                     border: false,
+		             id: 'importForm',
+                     items: [
+                       {  title: "Enter the filename containing the Objects you wish to import",
+                          xtype: "fieldset",
+                          items: [
+                            {  allowBlank: false,
+                               fieldLabel: "File Path",
+                               id: "importPath",
+                               inputType: "text",
+                               name: "importPath",
+                               xtype: "textfield",
+                               width: 400
+                            },
+                            {  id: "format",
+                               xtype: "radiogroup",
+                               fieldLabel: 'Format: ',
+                               items: [
+                                 {  boxLabel: "GT.M",
+                                    checked: true,
+                                    inputValue: 'gtm',
+                                    name: "format",
+                                    xtype: "radiofield"
+                                 }
+                               ]
+                            } 
+                          ]
+                       }
+                     ],
+                     buttons: [
+                       {  handler: function () {
+                            EWD.sockets.submitForm({
+                              id: 'importForm',
+                              alertTitle: 'An error occurred',
+                              messageType: 'EWD.form.import'
+                            });
+				          },
+                          text: "Import",
+                          xtype: "button",
+                          id: 'importBtn'
+                       }
+                     ]
+                  }
+                ]
              } 
            ]
         }

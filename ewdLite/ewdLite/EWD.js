@@ -55,7 +55,7 @@ var EWD = {
         if (obj.type === 'EWD.registered') {
           EWD.sockets.token = obj.token;
           EWD.initialised = true;
-          Ext.getCmp('loginBtn').show();
+          document.getElementsByTagName('body')[0].dispatchEvent(EWD.socketsReadyEvent);
           return;
         }
 
@@ -110,12 +110,20 @@ var EWD = {
       message: 'EWD Initialised'
     }
   }),
+  socketsReadyEvent: new CustomEvent('socketsReady',{
+    detail: {
+      message: 'Sockets Initialised'
+    }
+  }),
   ready: false,
   isReady: function() {
     if (!EWD.ready) {
       var body = document.getElementsByTagName('body')[0];
       body.addEventListener('ready', function(e) {
         EWD.sockets.startSession();
+      });
+      body.addEventListener('socketsReady', function(e) {
+        if (EWD.onSocketsReady) EWD.onSocketsReady();
       });
       body.dispatchEvent(EWD.readyEvent);
       EWD.ready = true;

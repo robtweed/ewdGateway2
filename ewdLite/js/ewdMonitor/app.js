@@ -211,7 +211,7 @@ var getGlobalSubscripts = function(params) {
 };
 
 var deleteGlobalNode = function(node) {
-  //EWD.node = node;
+  EWD.node = node;
   if (node.raw.type === 'globalName') {
     node.raw.globalName = node.raw.text;
 	node.raw.subscripts = '[]';
@@ -234,9 +234,12 @@ var deleteGlobalNode = function(node) {
   });
 };
 
+EWD.onSocketsReady = function() {
+  Ext.getCmp('loginBtn').show();
+};
 
 EWD.sockets.serverMessageHandler = function(messageObj) {
-  //console.log("serverMessageHandler: messageObj = " + JSON.stringify(messageObj));
+  if (EWD.sockets.trace) console.log("serverMessageHandler: messageObj = " + JSON.stringify(messageObj));
 
   if (messageObj.type === 'EWD.form.login') {
     EWD.password = Ext.getCmp('password').getValue();
@@ -395,6 +398,7 @@ EWD.sockets.serverMessageHandler = function(messageObj) {
   if (messageObj.type === 'getGlobals') {
     var globals = messageObj.message;
     var treeNode = Ext.getCmp('globalMenu').getRootNode();
+    treeNode.removeAll();
     var data = [];
     for (var i = 0; i < globals.length; i++) {
       data.push({
@@ -437,5 +441,21 @@ EWD.sockets.serverMessageHandler = function(messageObj) {
     }
     treeNode.appendChild(data);   
   } 
+  
+  if (messageObj.type === 'importPathError') {
+    if (messageObj.error.errno === 34) {
+      Ext.Msg.alert('FilePath not found:', messageObj.error.path); 
+      closeMsg();
+    }
+    else{
+      Ext.Msg.alert('File Error', JSON.stringify(messageObj.error)); 
+      closeMsg();
+    }
+  }
+  
+  if (messageObj.type === 'importFile') {
+      Ext.Msg.alert('File Imported Successfully', messageObj.path); 
+      closeMsg();
+  }
   
 };
