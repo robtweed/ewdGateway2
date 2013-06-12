@@ -8,7 +8,7 @@ var EWD = {
       if (typeof params.message === 'undefined') params.message = '';
       params.token = EWD.sockets.token;
       params.handlerModule = EWD.application.name;
-	  params.lite = true;
+      params.lite = true;
       if (typeof console !== 'undefined') {
         if (EWD.sockets.log) console.log("sendMessage: " + JSON.stringify(params));
       }
@@ -97,8 +97,9 @@ var EWD = {
           obj = null;
           return;
         }
-	 if (EWD.sockets.serverMessageHandler) {
-          EWD.sockets.serverMessageHandler(obj);
+
+	 if (EWD.onSocketMessage) {
+          EWD.onSocketMessage(obj);
           obj = null;
           return;
         }

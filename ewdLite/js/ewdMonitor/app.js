@@ -238,7 +238,7 @@ EWD.onSocketsReady = function() {
   Ext.getCmp('loginBtn').show();
 };
 
-EWD.sockets.serverMessageHandler = function(messageObj) {
+EWD.onSocketMessage = function(messageObj) {
   if (EWD.sockets.trace) console.log("serverMessageHandler: messageObj = " + JSON.stringify(messageObj));
 
   if (messageObj.type === 'EWD.form.login') {

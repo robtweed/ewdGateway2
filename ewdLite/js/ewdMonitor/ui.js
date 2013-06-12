@@ -594,6 +594,7 @@ EWD.ext4 = {
                           id: "memoryChart",
                           store: EWD.stores.memoryHistory,
                           width: "100%",
+
                           xtype: "chart",
                           axes: [
                             {  fields: ['rss', 'heapTotal', 'heapUsed'],
@@ -736,13 +737,13 @@ EWD.ext4 = {
                                       console.log('closing session ' + rec.data.sessid);
                                       closeSession(rec.data.sessid);
                                     },
-                                    icon: "/ext-4.2.1/examples/shared/icons/fam/delete.gif",
+                                    icon: "http://cdn.sencha.io/ext-4.1.1-gpl/examples/shared/icons/fam/delete.gif",
                                     tooltip: "Close down EWD Session"
                                  }, 
                                  {  handler: function (vw, rx, cx, item, ev, rec) {
                                       getSessionData(rec.data.sessid);
                                     },
-                                    icon: "/ext-4.2.1/examples/shared/icons/fam/folder_go.png",
+                                    icon: "http://cdn.sencha.io/ext-4.1.1-gpl/examples/shared/icons/fam/folder_go.png",
                                     tooltip: "Display EWD Session Contents"
                                  }
                                ]
