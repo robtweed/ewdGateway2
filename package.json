@@ -1,6 +1,6 @@
 { "name" : "ewdgateway2"
 , "description" : "Node.js-based EWD Gateway for Cache, GlobalsDB and GT.M"
-, "version" : "0.40.0"
+, "version" : "0.40.1"
 , "author" : "Rob Tweed <rtweed@mgateway.com>"
 , "repository" :
   { "type" : "git"
@@ -9,7 +9,7 @@
 , "bugs" : { "web" : "http://github.com/robtweed/ewdGateway2/issues" }
 , "os" : [ "any" ]
 , "directories" : { "lib" : "./lib/" }
-, "main" : "./lib/ewdgateway2"
+, "main" : "./lib/ewdGateway2.js"
 , "engines" : { "node" : ">=0.2.2" }
 , "dependencies" : {}
 , "licenses": [ "Apache" ]
