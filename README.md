@@ -1,6 +1,6 @@
 # ewdGateway2
  
-Node.js-based EWD Gateway for Cache and GT.M
+Node.js-based EWD Gateway for Cache, GlobalsDB and GT.M
 
 Rob Tweed <rtweed@mgateway.com>  
 10 January 2013, M/Gateway Developments Ltd [http://www.mgateway.com](http://www.mgateway.com)  
@@ -11,22 +11,30 @@ Google Group for discussions, support, advice etc: [http://groups.google.co.uk/g
 
 Thanks to Stephen Chadwick for enhancements and modifications
 
-## Installing ewdGateway
+## Installing ewdGateway2
 
        npm install ewdgateway2
 
        ..or copy the files from the lib directory of this repository into your working Node.js directory
 
-You must also install socket.io:
+npm will also install socket.io.  If you install ewdGateway2 manually, you must remember to also install socket.io:
 
        npm install socket.io
-	   
-The *ewdGateway2* module is compatible with EWD build 952 or later
 
 If you are using GT.M you must install David Wicksell's MNode interface package.
 
 If you are using Cach&#233;, ewdGateway2 uses its native Node.js interface (available since 
 Cach&#233; 2012.2, but it can be back-ported for use with earlier Cach&#233; versions)
+	   
+##EWD Lite
+
+ewdGateway2 now includes an entirely WebSocket-based subset of EWD known as EWD Lite.  EWD Lite does not
+require anything other than the ewdGateway2 module: it is entirely JavaScript-based and can work with
+the free GlobalsDB database [http://globalsdb.org](http://globalsdb.org).
+
+##Standard EWD
+
+The *ewdGateway2* module is compatible with EWD build 952 or later
 
 
 ##  EWD Gateway
@@ -46,11 +54,6 @@ The *ewdGateway2* module can be used as a replacement for a standard web server 
 or Cach&#233; database, the number of connections being determined by the *poolSize* that you specify.
 
 For further details about the EWD web application framework for GT.M and Cach&#233;, see [http://www.mgateway.com/ewd.html](http://www.mgateway.com/ewd.html)
-
-##  Using ewdGateway2
-
-To follow...
-
 
 
 
