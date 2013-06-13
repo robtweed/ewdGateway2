@@ -1,6 +1,6 @@
 # ewdGateway2
  
-Node.js-based EWD Gateway for Cache, GlobalsDB and GT.M
+Node.js-based EWD Gateway for Cach&#233;, GlobalsDB and GT.M
 
 Rob Tweed <rtweed@mgateway.com>  
 10 January 2013, M/Gateway Developments Ltd [http://www.mgateway.com](http://www.mgateway.com)  
@@ -30,7 +30,7 @@ Cach&#233; 2012.2, but it can be back-ported for use with earlier Cach&#233; ver
 
 ewdGateway2 now includes an entirely WebSocket-based subset of EWD known as EWD Lite.  EWD Lite does not
 require anything other than the ewdGateway2 module: it is entirely JavaScript-based and can work with
-the free GlobalsDB database [http://globalsdb.org](http://globalsdb.org).
+the free GlobalsDB database [http://globalsdb.org](http://globalsdb.org), in addition to GT.M and Cach&#233;
 
 ##Standard EWD
 
