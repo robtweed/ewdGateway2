@@ -1,4 +1,4 @@
-var ewd = require('./ewdGateway2');
+var ewd = require('ewdgateway2');
 
 var params = {
       poolSize: 2,
@@ -13,19 +13,14 @@ var params = {
         nodePath:"/home/vista/mumps",
         outputFilePath:"/home/vista/www/node",
       },
-      webSockets: {
-        socketIoPath: '/usr/lib/node_modules/socket.io'
-      },
       lite: true,
       modulePath: '/home/vista/www/node/node_modules',
       traceLevel: 3,
       webServerRootPath: '/home/vista/www',
-      logTo: 'console',
       logFile: 'ewdLog.txt',
       management: {
         password: 'keepThisSecret!'
      }
 };
 
-ewd.start(params,function(gateway) {
-});
+ewd.start(params);
