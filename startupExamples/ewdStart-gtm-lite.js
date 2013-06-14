@@ -11,7 +11,6 @@ var params = {
       database: {
         type: 'gtm',
         nodePath:"/home/vista/mumps",
-        outputFilePath:"/home/vista/www/node",
       },
       lite: true,
       modulePath: '/home/vista/www/node/node_modules',
