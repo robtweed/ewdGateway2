@@ -15,43 +15,47 @@ Thanks to Stephen Chadwick for enhancements and modifications
 
        npm install ewdgateway2
 
-       ..or copy the files from the lib directory of this repository into your working Node.js directory
 
-npm will also install socket.io.  If you install ewdGateway2 manually, you must remember to also install socket.io:
 
-       npm install socket.io
+..or copy the files from the lib directory of this repository into your working Node.js directory
 
-If you are using GT.M you must install David Wicksell's MNode interface package.
+Note that socket.io will also be installed for you. 
+
+If you are using GT.M you must install David Wicksell's [NodeM] (https://github.com/dlwicksell/nodem) interface package.
 
 If you are using Cach&#233;, ewdGateway2 uses its native Node.js interface (available since 
 Cach&#233; 2012.2, but it can be back-ported for use with earlier Cach&#233; versions)
 	   
 ##EWD Lite
 
-ewdGateway2 now includes an entirely WebSocket-based subset of EWD known as EWD Lite.  EWD Lite does not
-require anything other than the ewdGateway2 module: it is entirely JavaScript-based and can work with
+ewdGateway2 now includes support for an entirely WebSocket-based subset of the EWD framework known as EWD Lite.  
+Unlike the full EWD framework, EWD Lite does not
+require anything other than the ewdGateway2 module: it is an entirely JavaScript-based framework and
+methodology and can work with
 the free GlobalsDB database [http://globalsdb.org](http://globalsdb.org), in addition to GT.M and Cach&#233;
 
 ##Standard EWD
 
-The *ewdGateway2* module is compatible with EWD build 952 or later
+The *ewdGateway2* module is compatible with EWD build 963 or later
 
 
 ##  EWD Gateway
 
-EWD is a proven web application/Ajax framework specifically designed for use with GT.M and Cach&#233; databases, 
-allowing extremely rapid development of secure, high-performance web applications.
-
-The *ewdGateway2* module provides a multi-purpose web application gateway for EWD applications.  Functionality includes:
+The *ewdGateway2* module provides a multi-purpose web application gateway for EWD applications.  
+Functionality includes:
 
 - web server
-- web server gateway to GT.M and Cach&#233;, pre-configured for running EWD applications;
-- websockets middle-tier connecting browser to GT.M or Cach&#233;, pre-configured for the EWD Realtime functionality;
-- integrated OO access to globals from Javascript/Node.js
+- web server gateway to the major Mumps databases (GT.M, GlobalsDB and Cach&#233;), 
+  pre-configured for running EWD applications;
+- websockets middle-tier connecting browsers to GT.M, GlobalsDB or Cach&#233;, pre-configured for the EWD 
+  Realtime and EWD Lite functionality;
+- integrated OO access to Mumps data storage from Javascript/Node.js, allowing Mumps databases to be
+  used as persistent JSON storage
 
 The *ewdGateway2* module can be used as a replacement for a standard web server such as IIS or Apache, and no other
- gateway technology is required.  The *ewdGateway2* module automatically makes *child_process* connections to your GT.M 
-or Cach&#233; database, the number of connections being determined by the *poolSize* that you specify.
+ gateway technology is required.  The *ewdGateway2* module automatically makes *child_process* connections 
+to your GT.M, GlobalsDB or Cach&#233; database, the number of connections being determined by the *poolSize* 
+that you specify.
 
 For further details about the EWD web application framework for GT.M and Cach&#233;, see [http://www.mgateway.com/ewd.html](http://www.mgateway.com/ewd.html)
 

@@ -1,5 +1,5 @@
 EWD.application = {
-  name: 'tony'
+  name: 'demo'
 };
 
 EWD.loader = {enabled: false};
