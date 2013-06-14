@@ -11,9 +11,9 @@ var params = {
   database: {
     type: 'globals',
     nodePath: "cache",
-    path:"~/globalsdb/mgr",
+    path:"globalsdb/mgr",
   },
-  modulePath: '~/globalsdb/node_modules',
+  modulePath: 'globalsdb/node_modules',
   traceLevel: 3,
   webServerRootPath: 'www',
   logFile: 'ewdLog.txt',
