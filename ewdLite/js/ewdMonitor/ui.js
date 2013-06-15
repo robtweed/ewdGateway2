@@ -903,12 +903,6 @@ EWD.ext4 = {
                      xtype: "textfield"
                   }
                 ]
-             }, 
-             {  handler: function () {
-                  Ext.getCmp('password').setValue('keepThisSecret!');
-                },
-                text: "Quick Login",
-                xtype: "button"
              }
            ],
            buttons: [
