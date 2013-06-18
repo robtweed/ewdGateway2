@@ -24,7 +24,11 @@ var EWD = {
     },
 
     submitForm: function(params) {
-      var payload = Ext.getCmp(params.id).getValues();
+      var framework = params.framework || 'extjs';
+      var payload = params.fields;
+      if (framework === 'extjs') {
+        payload = Ext.getCmp(params.id).getValues();
+      }
       if (params.alertTitle) payload.alertTitle = params.alertTitle;
       EWD.sockets.sendMessage({
         type: params.messageType, 
