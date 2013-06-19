@@ -819,10 +819,11 @@ EWD.ext4 = {
 				]             
              },
              {  id: "exportTabPanel",
-                //layout: "fit",
+                layout: "vbox",
+                autoScroll: true,
                 title: 'Export/Import',
                 xtype: "panel",
-				items: [
+                items: [
                   {  //flex: 1,
                      bodyPadding: 10,
                      height: 150,
@@ -869,7 +870,55 @@ EWD.ext4 = {
                           id: 'importBtn'
                        }
                      ]
+                  },
+
+                  //  2nd import form: JSON import
+                  {  //flex: 1,
+                     layout: 'fit',
+                     autoScroll: true,
+                     bodyPadding: 10,
+                     xtype: "form",
+                     border: false,
+		       id: 'importJSON',
+                     items: [
+                       {  title: "Enter the Mumps array Name and the JSON to import into it",
+                          xtype: "fieldset",
+                          items: [
+                            {  allowBlank: false,
+                               fieldLabel: "Mumps Array Name",
+                               id: "importGlobalName",
+                               inputType: "text",
+                               name: "globalName",
+                               xtype: "textfield",
+                               width: 400
+                            },
+                            {  allowBlank: false,
+                               fieldLabel: "JSON",
+                               id: "importJson",
+                               grow: true,
+                               name: "json",
+                               xtype: "textareafield",
+                               width: 400,
+                               anchor: '100%'
+                            },
+                          ]
+                       }
+                     ],
+                     buttons: [
+                       {  handler: function () {
+                            EWD.sockets.submitForm({
+                              id: 'importJSON',
+                              alertTitle: 'An error occurred',
+                              messageType: 'EWD.form.importJSON'
+                            });
+                          },
+                          text: "Import",
+                          xtype: "button",
+                          id: 'importJSONBtn'
+                       }
+                     ]
                   }
+
                 ]
              } 
            ]
