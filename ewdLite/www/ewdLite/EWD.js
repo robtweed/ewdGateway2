@@ -30,6 +30,7 @@ var EWD = {
         payload = Ext.getCmp(params.id).getValues();
       }
       if (params.alertTitle) payload.alertTitle = params.alertTitle;
+      payload.js_framework = framework;
       EWD.sockets.sendMessage({
         type: params.messageType, 
         params: payload
@@ -46,15 +47,16 @@ var EWD = {
       });
       this.socket.on('message', function(obj){
         //console.log("onMessage: " + JSON.stringify(obj));
-		if (EWD.application) {
+        if (EWD.application) {
           if (obj.type === 'EWD.connected') {
-            EWD.sockets.sendMessage({type: 'EWD.register', application: EWD.application});
-            return;
+             EWD.sockets.sendMessage({type: 'EWD.register', application: EWD.application});
+             return;
           }
-		}
-		else {
-		  console.log('Unable to register application: EWD.application has not been defined');
-		}
+        }
+        else {
+          console.log('Unable to register application: EWD.application has not been defined');
+          return;
+        }
 
         if (obj.type === 'EWD.registered') {
           EWD.sockets.token = obj.token;
@@ -63,11 +65,67 @@ var EWD = {
           return;
         }
 
+        if (obj.message) {
+          var payloadType = obj.message.payloadType;
+          if (payloadType === 'innerHTMLReplace') {
+            var replacements = obj.message.replacements;
+            var replacement;
+            var prefix;
+            for (var i = 0; i < replacements.length; i++) {
+              replacement = replacements[i];
+              prefix = replacement.prefix || '';
+              for (var idName in replacement.ids) {
+                document.getElementById(prefix + idName).innerHTML = replacement.ids[idName];
+              }
+            }
+          }
+          if (payloadType === 'bootstrap') {
+            var action = obj.message.action;
+            if (action === 'replaceTables') {
+              var tables = obj.message.tables;
+              var tableNo;
+              var table;
+              var i;
+              var html;
+              var tableTag;
+              var columns;
+              var colNo;
+              var row;
+              for (tableNo = 0; tableNo < tables.length; tableNo++) {
+                table = tables[tableNo];
+                tableTag = document.getElementById(table.id);
+                html = '<thead><tr>'
+                columns = EWD.bootstrap.table[table.id].columns;
+                for (i = 0; i < columns.length; i++) {
+                  if (columns[i].heading !== '') html = html + '<th>' + columns[i].heading + '</th>'; 
+                }
+                html = html + '</tr></thead>';
+                html = html + '<tbody>';
+                for (i = 0; i < table.content.length; i++) {
+                  row = table.content[i];
+                  html = html + '<tr>';
+                  for (colNo = 0; colNo < columns.length; colNo++) {
+                    html = html + '<td>' + row[columns[colNo].id] + '</td>';
+                  }
+                  html = html + '</tr>';
+                }
+                 html = html + '</tbody>';
+                 tableTag.innerHTML = html;
+              }
+            }
+          }
+        }
+
         if (obj.type.indexOf('EWD.form.') !== -1) {
           if (obj.error) {
             var alertTitle = 'Form Error';
             if (obj.alertTitle) alertTitle = obj.alertTitle;
-            Ext.Msg.alert(alertTitle, obj.error);
+            if (obj.js_framework === 'extjs') {
+              Ext.Msg.alert(alertTitle, obj.error);
+            }
+            else {
+              alert(obj.error);
+            }
             return;
           }
         }
