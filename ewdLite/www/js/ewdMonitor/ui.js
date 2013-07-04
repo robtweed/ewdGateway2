@@ -778,7 +778,23 @@ EWD.ext4 = {
                           handler: function() {
                             EWD.sockets.sendMessage({type: 'getGlobals'});
                           }
-                       }
+                       },
+                       {  xtype: 'button', 
+                          text: 'Previous 25',
+                          hidden: true,
+                          id: 'prev100Btn',
+                          handler: function() {
+                            EWD.sockets.sendMessage({type: 'getPrevGlobals', params:{lo: EWD.firstGlobalName.pop()}});
+                          }
+                       },
+                       {  xtype: 'button', 
+                          text: 'Next 25',
+                          hidden: true,
+                          id: 'next100Btn',
+                          handler: function() {
+                            EWD.sockets.sendMessage({type: 'getNextGlobals', params: {lo: EWD.lastGlobalName}});
+                          }
+                       },
                      ],
                      id: "globalMenu",
                      rootVisible: true,

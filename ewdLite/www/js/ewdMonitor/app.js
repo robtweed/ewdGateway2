@@ -234,6 +234,23 @@ var deleteGlobalNode = function(node) {
   });
 };
 
+var updateGlobalList = function(globals) {
+  var treeNode = Ext.getCmp('globalMenu').getRootNode();
+  treeNode.removeAll();
+  var data = [];
+  for (var i = 0; i < globals.length; i++) {
+    data.push({
+      id: 'ewd.' + globals[i],
+      text: globals[i],
+      leaf: false,
+      type: 'globalName',
+      fetched: false,
+      checked: false
+    });
+  }
+  treeNode.appendChild(data);
+};
+
 EWD.onSocketsReady = function() {
   Ext.getCmp('loginBtn').show();
 };
@@ -396,23 +413,42 @@ EWD.onSocketMessage = function(messageObj) {
   }  
   
   if (messageObj.type === 'getGlobals') {
-    var globals = messageObj.message;
-    var treeNode = Ext.getCmp('globalMenu').getRootNode();
-    treeNode.removeAll();
-    var data = [];
-    for (var i = 0; i < globals.length; i++) {
-      data.push({
-        id: 'ewd.' + globals[i],
-        text: globals[i],
-        leaf: false,
-        type: 'globalName',
-        fetched: false,
-        checked: false
-      });
+    var globals = messageObj.message; 
+    updateGlobalList(globals);
+    EWD.firstGlobalName = [];
+    EWD.globalName1 = globals[0];
+    Ext.getCmp('prev100Btn').hide();
+    if (globals.length === 25) {
+      Ext.getCmp('next100Btn').show();
+      EWD.lastGlobalName = globals[24];
+      EWD.globalNameSeed = '';
     }
-    treeNode.appendChild(data);   
   } 
   
+  if (messageObj.type === 'getNextGlobals') {
+    var globals = messageObj.message; 
+    updateGlobalList(globals);
+    EWD.firstGlobalName.push(EWD.globalNameSeed);
+    if (globals.length === 25) {
+      Ext.getCmp('prev100Btn').show();
+      EWD.lastGlobalName = globals[24];
+    }
+    else {
+      Ext.getCmp('next100Btn').hide();
+    }
+    EWD.globalNameSeed = globals[0];
+  } 
+
+  if (messageObj.type === 'getPrevGlobals') {
+    var globals = messageObj.message; 
+    updateGlobalList(globals);
+    if (globals.length === 25) {
+      Ext.getCmp('next100Btn').show();
+      EWD.lastGlobalName = globals[24];
+    }
+    if (globals[0] === EWD.globalName1) Ext.getCmp('prev100Btn').hide();
+  } 
+
   if (messageObj.type === 'getGlobalSubscripts') {
     var subscripts = messageObj.message.subscripts;
     var treeNode = Ext.getCmp('globalMenu').getRootNode().findChild('id', messageObj.message.nodeId, true ) ;
