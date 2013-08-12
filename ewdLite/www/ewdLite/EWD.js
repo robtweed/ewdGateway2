@@ -1,6 +1,88 @@
 var EWD = {
+  version: {
+    build: 2,
+    date: '12 August 2013'
+  }, 
   trace: false,
   initialised: false,
+  show: function(id) {
+    if (document.getElementById(id) !== null) {
+      document.getElementById(id).style.display = '';
+    }
+  },
+  hide: function(id) {
+    if (document.getElementById(id) !== null) {
+      document.getElementById(id).style.display = 'none';
+    }
+  },
+  insertAfter: function(html, targetId) {
+    var tag = document.createElement('div');
+    tag.innerHTML = html;
+  },
+  json2XML: function(document, tagName, xml) {
+    if (!xml) xml = '';
+    var intRegex = /^\d+$/;
+    var numericTagName = intRegex.test(+tagName);
+    //console.log('tagName: ' + tagName);
+    if (tagName && !numericTagName) xml = xml + '<' + tagName;
+    var hasAttributes = false;
+    var hasChildren = false;
+    var property;
+    var value;
+    var text = '';
+
+    for (property in document) {
+      if (property.substring(0,1) === '#') {
+        hasAttributes = true;
+      }
+      else if (property === '.text') {
+        text = document[property];
+      }
+      //else if (!intRegex.test(property)) {
+      else {
+        hasChildren = true;
+      }
+    }
+
+    if (hasAttributes) {
+      for (property in document) {
+        if (property.substring(0,1) === '#') {
+          xml = xml + ' ' + property.substring(1) + '="' + document[property] + '"';
+        }
+      }
+    }
+    if (tagName && !numericTagName && hasChildren) xml = xml + '>';
+
+    if (hasChildren) {
+      for (property in document) {
+        if (property.substring(0,1) !== '#') {
+          if (typeof document[property] === 'object') {
+            xml = this.json2XML(document[property], property, xml);
+          }
+          else {
+            value = document[property];
+            if (value !== '') {
+              xml = xml + '<' + property + '>' + value + '</' + property + '>';
+            }
+            else {
+              xml = xml + '<' + property + ' />';
+            } 
+          }
+        }
+      }
+      if (tagName && !numericTagName) xml = xml + '</' + tagName + '>';
+      return xml;
+    }
+
+    if (text !== '' && tagName) {
+      xml = xml + '>' + text + '</' + tagName + '>';
+      return xml;
+    }
+
+    xml = xml + ' />';
+    return xml;
+
+  },
   sockets: {
     log: false,
     handlerFunction: {},
@@ -46,7 +128,7 @@ var EWD = {
         }
       });
       this.socket.on('message', function(obj){
-        //console.log("onMessage: " + JSON.stringify(obj));
+        if (EWD.sockets.log) console.log("onMessage: " + JSON.stringify(obj));
         if (EWD.application) {
           if (obj.type === 'EWD.connected') {
              EWD.sockets.sendMessage({type: 'EWD.register', application: EWD.application});
@@ -120,7 +202,7 @@ var EWD = {
           if (obj.error) {
             var alertTitle = 'Form Error';
             if (obj.alertTitle) alertTitle = obj.alertTitle;
-            if (obj.js_framework === 'extjs') {
+            if (obj.framework === 'extjs') {
               Ext.Msg.alert(alertTitle, obj.error);
             }
             else {
