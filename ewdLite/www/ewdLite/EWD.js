@@ -1,7 +1,7 @@
 var EWD = {
   version: {
-    build: 2,
-    date: '12 August 2013'
+    build: 3,
+    date: '27 September 2013'
   }, 
   trace: false,
   initialised: false,
@@ -106,13 +106,13 @@ var EWD = {
     },
 
     submitForm: function(params) {
-      var framework = params.framework || 'extjs';
+      var framework = EWD.application.framework || 'extjs';
       var payload = params.fields;
       if (framework === 'extjs') {
         payload = Ext.getCmp(params.id).getValues();
       }
       if (params.alertTitle) payload.alertTitle = params.alertTitle;
-      payload.js_framework = framework;
+      //payload.js_framework = framework;
       EWD.sockets.sendMessage({
         type: params.messageType, 
         params: payload
@@ -122,6 +122,7 @@ var EWD = {
     startSession: function(messageFunction) {
       if (typeof messageFunction === 'undefined') messageFunction = EWD.sockets.serverMessageHandler;
       this.socket = io.connect();
+      EWD.socket = this.socket;
       this.socket.on('connect', function() {
         if (typeof EWD.sockets.token !== 'undefined') {
           EWD.sockets.sendMessage({type: 'EWD.startSession'});
@@ -202,8 +203,13 @@ var EWD = {
           if (obj.error) {
             var alertTitle = 'Form Error';
             if (obj.alertTitle) alertTitle = obj.alertTitle;
-            if (obj.framework === 'extjs') {
+            if (EWD.application.framework === 'extjs') {
               Ext.Msg.alert(alertTitle, obj.error);
+            }
+            else if (EWD.application.framework === 'bootstrap') {
+              var name = obj.type.substr(9);
+              console.log("name = " + name);
+              document.getElementById(name + 'AlertText').innerHTML = 'Error: ' + obj.error;
             }
             else {
               alert(obj.error);
@@ -273,5 +279,28 @@ var EWD = {
       body.dispatchEvent(EWD.readyEvent);
       EWD.ready = true;
     }
+  },
+  utils: {
+    addOptions: function(options, selectTagId) {
+      // EWD.utils.addOptions([{value: 'John', text: 'John Smith'}], 'doctor');
+      if (options instanceof Array) {
+        var selectTag = document.getElementById(selectTagId);
+        for (var i = 0; i < options.length; i++) {
+          EWD.utils.addOption(selectTag, options[i].value, options[i].text);
+        }
+      }
+    },
+    addOption: function(selectTag, value, text) {
+      var optionTag = document.createElement('option');
+      optionTag.setAttribute('value', value);
+      optionTag.text = text;
+      try {
+        // for IE earlier than version 8
+        selectTag.add(optionTag, selectTag.options[null]);
+      }
+      catch (err) {
+        selectTag.add(optionTag,null);
+      }
+    } 
   }
 };
