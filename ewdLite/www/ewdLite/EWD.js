@@ -1,7 +1,21 @@
+if (!CustomEvent) {
+  // Typically for IE
+  (function () {
+    function CustomEvent ( event, params ) {
+      params = params || { bubbles: false, cancelable: false, detail: undefined };
+      var evt = document.createEvent( 'CustomEvent' );
+      evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+      return evt;
+     };
+    CustomEvent.prototype = window.CustomEvent.prototype;
+    window.CustomEvent = CustomEvent;
+  })();
+}
+
 var EWD = {
   version: {
-    build: 3,
-    date: '27 September 2013'
+    build: 4,
+    date: '15 October 2013'
   }, 
   trace: false,
   initialised: false,
@@ -111,6 +125,36 @@ var EWD = {
       if (framework === 'extjs') {
         payload = Ext.getCmp(params.id).getValues();
       }
+      if (framework === 'bootstrap') {
+          if (params.popover) {
+            EWD.application.popover = params.popover;
+            if (!EWD.application.popovers) EWD.application.popovers = {};
+            if (!EWD.application.popovers[params.popover.buttonId]) {
+              $('#' + params.popover.buttonId).popover({
+                title: params.alertTitle || 'Error',
+                content: 'Testing',
+                placement: 'top',
+                container: '#' + params.popover.container,
+                trigger: 'manual'
+              });
+              $('#' + params.popover.buttonId).on('shown.bs.popover', function() {
+                var time = params.popover.time || 4000;
+                setTimeout(function() {
+                  $('#' + params.popover.buttonId).popover('hide');
+                },time);
+              });
+              EWD.application.popovers[params.popover.buttonId] = true;
+            }
+          }
+          if (params.toastr) {
+            if (params.toastr.target) {
+              toastr.options.target = '#' + params.toastr.target;
+            }
+            else {
+              toastr.options.target = 'body';
+            }
+          }
+      }
       if (params.alertTitle) payload.alertTitle = params.alertTitle;
       //payload.js_framework = framework;
       EWD.sockets.sendMessage({
@@ -207,14 +251,27 @@ var EWD = {
               Ext.Msg.alert(alertTitle, obj.error);
             }
             else if (EWD.application.framework === 'bootstrap') {
-              var name = obj.type.substr(9);
-              console.log("name = " + name);
-              document.getElementById(name + 'AlertText').innerHTML = 'Error: ' + obj.error;
+              if (toastr) {
+                toastr.clear();
+                toastr.error(obj.error);
+              }
+              else {
+                //var name = obj.type.substr(9);
+                //document.getElementById(name + 'AlertText').innerHTML = 'Error: ' + obj.error;
+                if (EWD.sockets.log) console.log("error = " + obj.error);
+                $('#' + EWD.application.popover.buttonId).popover('show');
+                $('#' + EWD.application.popover.container).find('div.popover-content').html(obj.error);
+              }
             }
             else {
               alert(obj.error);
             }
             return;
+          }
+          else {
+            if (EWD.application.framework === 'bootstrap') {
+              $('#loginBtn').popover('hide');
+            }
           }
         }
 
