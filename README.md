@@ -15,13 +15,13 @@ Google Group for discussions, support, advice etc: [http://groups.google.co.uk/g
        npm install ewdgateway2
 
 	   
-##EWD Lite
+##EWD.js
 
-ewdGateway2 includes an entirely WebSocket-based framework known as EWD Lite.
+ewdGateway2 includes an entirely WebSocket-based framework known as EWD.js.
 
-For full information on EWD Lite and how to install, configure and use the
-ewdgateway2 module, see: [http://gradvs1.mgateway.com/download/EWDLite.pdf]
-(http://gradvs1.mgateway.com/download/EWDLite.pdf)
+For full information on EWD.js and how to install, configure and use the
+ewdgateway2 module, see: [http://gradvs1.mgateway.com/download/EWDjs.pdf]
+(http://gradvs1.mgateway.com/download/EWDjs.pdf)
 
 
 ## License
