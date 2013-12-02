@@ -1,6 +1,6 @@
 # ewdGateway2
  
-Node.js-based EWD Gateway for Cach&#233;, GlobalsDB and GT.M
+Node.js-based EWD Gateway for MongoDB, Cach&#233;, GlobalsDB and GT.M
 
 Rob Tweed <rtweed@mgateway.com>  
 10 January 2013, M/Gateway Developments Ltd [http://www.mgateway.com](http://www.mgateway.com)  
