@@ -271,7 +271,7 @@ EWD.onSocketMessage = function(messageObj) {
     EWD.stores.buildStore.getAt(0).set('version',messageObj.data.nodeVersion);
     EWD.stores.buildStore.getAt(1).set('version',messageObj.data.build);
     EWD.stores.buildStore.getAt(2).set('version',messageObj.data['ewdQBuild']);
-    EWD.stores.buildStore.getAt(3).set('version','Lite');	
+    EWD.stores.buildStore.getAt(3).set('version','EWD.js');	
     Ext.getCmp('qGrid').setTitle('Master Process: ' + messageObj.data.masterProcess);
 
     EWD.stores.childProcesses.removeAt(0);
