@@ -1,4 +1,4 @@
-if (!CustomEvent) {
+if (typeof CustomEvent === 'undefined') {
   // Typically for IE
   (function () {
     function CustomEvent ( event, params ) {
@@ -7,15 +7,15 @@ if (!CustomEvent) {
       evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
       return evt;
      };
-    CustomEvent.prototype = window.CustomEvent.prototype;
+    if (window.CustomEvent) CustomEvent.prototype = window.CustomEvent.prototype;
     window.CustomEvent = CustomEvent;
   })();
 }
 
 var EWD = {
   version: {
-    build: 4,
-    date: '15 October 2013'
+    build: 5,
+    date: '04 December 2013'
   }, 
   trace: false,
   initialised: false,
