@@ -1,6 +1,6 @@
 { "name": "ewdgateway2", 
   "description": "Node.js-based EWD Gateway for MongoDB, Cache, GlobalsDB and GT.M: Includes EWD.js", 
-   "version": "0.50.3", 
+   "version": "0.50.4", 
    "author": "Rob Tweed <rtweed@mgateway.com>", 
    "repository": { 
      "type": "git", 
