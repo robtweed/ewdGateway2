@@ -14,8 +14,8 @@ if (typeof CustomEvent === 'undefined') {
 
 var EWD = {
   version: {
-    build: 5,
-    date: '04 December 2013'
+    build: 6,
+    date: '16 December 2013'
   }, 
   trace: false,
   initialised: false,
@@ -214,11 +214,16 @@ var EWD = {
                   return params;
                 };
                 return function(params) {
-                  params = augment(params);
-                  if (typeof console !== 'undefined') {
-                    if (EWD.sockets.log) console.log("sendMessage: " + JSON.stringify(params));
+                  if (typeof params.type === 'undefined') {
+                    if (EWD.sockets.log) console.log('Message not sent: type not defined');
                   }
-                  io.json.send(JSON.stringify(params)); 
+                  else {
+                    params = augment(params);
+                    if (typeof console !== 'undefined') {
+                      if (EWD.sockets.log) console.log("sendMessage: " + JSON.stringify(params));
+                    }
+                    io.json.send(JSON.stringify(params)); 
+                  }
                 };
               })();
               obj = null;

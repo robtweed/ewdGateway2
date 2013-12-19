@@ -1,6 +1,6 @@
 EWD.bootstrap3 = {
   createMenu: function() {
-    if (!EWD.application.menuCreated) {
+    if (document.getElementById('ewd-mainMenu') && !EWD.application.menuCreated) {
       var option;
       var i;
       for (i = 0; i < EWD.application.menuOptions.length; i++) {
