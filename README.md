@@ -26,7 +26,7 @@ ewdgateway2 module, see: [http://gradvs1.mgateway.com/download/EWDjs.pdf]
 
 ## License
 
- Copyright (c) 2013 M/Gateway Developments Ltd,                           
+ Copyright (c) 2013-14 M/Gateway Developments Ltd,                           
  Reigate, Surrey UK.                                                      
  All rights reserved.                                                     
                                                                            
