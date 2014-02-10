@@ -1,5 +1,5 @@
 EWD.application = {
-  name: 'ewdMonitor-bs',
+  name: 'ewdMonitor',
   timeout: 3600,
   labels: {
     'ewd-title': 'EWD.js Monitor',
