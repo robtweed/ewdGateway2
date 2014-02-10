@@ -1,5 +1,8 @@
+// 10 February 2014
+
 EWD.bootstrap3 = {
   createMenu: function() {
+    if (typeof EWD.application.menuOptions === 'undefined') return;
     if (document.getElementById('ewd-mainMenu') && !EWD.application.menuCreated) {
       var option;
       var i;
@@ -22,8 +25,113 @@ EWD.bootstrap3 = {
       }
       EWD.application.menuCreated = true;
     }
+  },
+
+  /* navigation functionality
+     * Navbar needs id of 'navList'
+     * Navbar buttons need suffix of '[id]_Nav'
+     * Footer needs div wrapper with id of '#footerLinks'
+     * Footer buttons need suffix of '[id]_Footer'
+     * navbar and footer buttons will then switch the current container with '[id]_Container'
+     * during animation navbar & footer buttons are disabled
+  */
+  nav: {
+    // swap pages from current to target
+    // targetId = string ID of clicked navbar/footer link (e.g. ewd_Nav/ewd_Footer)
+    pageSwap: function(targetId) {
+      var current = EWD.bootstrap3.nav.getCurrentPage();
+      var target = targetId.split('_')[0];
+      if (target !== current) {
+        var currentRef = '#' + current + '_Container';
+        var targetRef = '#' + target + '_Container';        
+        $('#' + current + '_Container').on('hidden.bs.collapse', function() {
+          $('#' + target + '_Container').on('shown.bs.collapse', function() {
+            EWD.bootstrap3.nav.enable();
+            $('#' + target + '_Container').unbind();
+          });
+          $('#' + target + '_Container').collapse('show');
+          $('#' + current + '_Container').unbind();
+        });
+        EWD.bootstrap3.nav.disable();
+        $('#' + current + '_Container').collapse('hide');
+        $('#' + current + '_Nav').removeClass('active');
+        $('#' + target + '_Nav').addClass('active');
+      }
+      if (typeof EWD.application.navFragments[target] !== 'undefined') {
+        var params = EWD.application.navFragments[target];
+        if (!params.file) params.file = target + '.html';
+        if (!params.targetId) params.targetId = target + '_Container';
+        if (!params.fragmentOuterId) params.fragmentOuterId = target + 'PageLoaded';
+        var loadFragment = function(params) {
+          EWD.sockets.sendMessage({
+            type: "EWD.getFragment", 
+            params:  {
+              file: params.file,
+              targetId: params.targetId
+            }
+          });
+        }
+        if (params.cache) {
+          if ($('#' + params.targetOuterId).length === 0) loadFragment(params);
+        }
+        else {
+          loadFragment(params);
+        }
+      }
+      //if (EWD.application.onPageSwap) EWD.application.onPageSwap(target);
+      if (EWD.application.onPageSwap) {
+        if (EWD.application.onPageSwap[target]) EWD.application.onPageSwap[target]();
+      } 
+    },
+    // initialise navbar & footer buttons
+    enable: function() {
+      if ($('#navList')) {
+        $('#navList').children().each(function() { // add listener to each navbar button
+          $('#' + this.id).on('click', function() {
+            EWD.bootstrap3.nav.pageSwap(this.id);
+          });
+        });
+      }
+      if ($('#footerLinks')) {
+        $('#footerLinks').children().each(function() { // add listener to each footer button
+          $('#' + this.id).on('click', function() {
+            EWD.bootstrap3.nav.pageSwap(this.id);
+          });
+        });
+      }
+    },
+    // disable navbar buttons
+    disable: function() {
+      if ($('#navList')) {
+        $('#navList').children().each(function() {
+          $('#' + this.id).unbind();
+        });
+      }
+      if ($('#footerLinks')) {
+        $('#footerLinks').children().each(function() {
+          $('#' + this.id).unbind();
+        });
+      }
+    },
+    // find which page container is currently open
+    getCurrentPage: function() {
+      var current;
+      var id;
+      $('#navList').children().each(function() {
+        id = this.id.split('_')[0];
+        if ($('#' + id + '_Container').hasClass('in')) {
+          current = this.id.split('_')[0];
+        }
+      });
+      return current;
+    }
   }
 
+};
+
+EWD.targetIdExists = function(targetId) {
+  if (targetId.charAt(0) !== '#') targetId = '#' + targetId;
+  return $(targetId).length !== 0
 };
 
 EWD.onSocketsReady = function() {
@@ -53,7 +161,7 @@ EWD.onSocketsReady = function() {
   });
   $('#loginPanel').modal({show: true, backdrop: 'static'});
 
-  $('#loginForm').keydown(function(event){
+  $('#loginPanelBody').keydown(function(event){
     if (event.keyCode === 13) {
       document.getElementById('loginBtn').click();
     }
@@ -92,7 +200,7 @@ EWD.onSocketsReady = function() {
   // Login form button handler
 
   $('body').on( 'click', '#loginBtn', function(event) {
-    event.stopPropagation(); // prevent default bootstrap behavior
+    event.preventDefault(); // prevent default bootstrap behavior
     EWD.sockets.submitForm({
       fields: {
         username: $('#username').val(),
@@ -160,6 +268,8 @@ EWD.onSocketsReady = function() {
   // everything is ready to go:
   // activate login button and the user can start interacting
 
+  if (EWD.application.onStartup) EWD.application.onStartup();
+
   document.getElementById('loginBtn').style.display = '';
 };
 
@@ -198,6 +308,10 @@ EWD.onSocketMessage = function(messageObj) {
     EWD.bootstrap3.createMenu();
     return;
   }
+
+  if (EWD.application.onMessage) {
+    if (EWD.application.onMessage[messageObj.type]) EWD.application.onMessage[messageObj.type](messageObj);
+  } 
 
   if (EWD.application.messageHandlers) EWD.application.messageHandlers(messageObj);
 

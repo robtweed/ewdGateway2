@@ -14,8 +14,8 @@ if (typeof CustomEvent === 'undefined') {
 
 var EWD = {
   version: {
-    build: 6,
-    date: '16 December 2013'
+    build: 9,
+    date: '10 February 2014'
   }, 
   trace: false,
   initialised: false,
@@ -204,12 +204,14 @@ var EWD = {
             }
             if (obj.type === 'EWD.registered') {
               EWD.sockets.sendMessage = (function() {
+                var applicationName = EWD.application.name;
+                delete EWD.application.name;
                 var io = socket;
                 var token = obj.token;
                 var augment = function(params) {
                   if (typeof params.message === 'undefined') params.message = '';
                   params.token = token;
-                  params.handlerModule = EWD.application.name;
+                  params.handlerModule = applicationName; //EWD.application.name;
                   params.lite = true;
                   return params;
                 };
@@ -320,6 +322,17 @@ var EWD = {
               if (obj.error) {
                 if (EWD.trace) console.log(obj.error);
               }
+              return;
+            }
+
+            if (obj.type === 'EWD.getFragment') {
+              if (obj.message.targetId && document.getElementById(obj.message.targetId)) {
+                document.getElementById(obj.message.targetId).innerHTML = obj.message.content;
+              }
+              //if (EWD.application.onFragment) EWD.application.onFragment(obj.message.file, obj);
+              if (EWD.application.onFragment) {
+                if (EWD.application.onFragment[obj.message.file]) EWD.application.onFragment[obj.message.file](obj);
+              } 
               return;
             }
 
