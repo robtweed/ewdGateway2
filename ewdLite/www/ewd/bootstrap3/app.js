@@ -1,28 +1,86 @@
+EWD.sockets.log = true;   // *** set this to false after testing / development
+
 EWD.application = {
-  name: '[your appName]',
+  name: 'bootstrap3', // **** change to your application name
+  timeout: 3600,
   labels: {
-    'ewd-title': '[<title> name in HTML Header]',
-    'ewd-loginPanel-title': '[Title for modal login panel]',
-    'ewd-navbar-title-phone': '[Title in top header bar - shortened for phone]',
-    'ewd-navbar-title-other': '[Title in top header bar for use in other devices]',
-    'ewd-menu-title': '[Header for main menu side panel]',
-    'ewd-panel1-title': '[main panel header title if !selectPatient]'
+    'ewd-title': 'Demo',                                     // *** Change as needed
+    'ewd-navbar-title-phone': 'Demo App',                    // *** Change as needed
+    'ewd-navbar-title-other': 'Demonstration Application'    // *** Change as needed
   },
-  menuOptions: {
-    'yourMenuOptionId': {
-      text: '[Menu Option Text]',
-      handler: function() {
-        console.log("Handler for menu option when clicked");
-      },
-      active: true // leave out for other options
+  navFragments: {
+    main: {
+      cache: true
+    },
+    about: {
+      cache: true
     }
   },
-  selectPatient: true,  // set to false if you don't want patient selection enabled
-  tabbedPanels: false,  // set to true to enable multiple tabbed panels
-  messageHandlers: function(messageObj) {
-    // your application-specific websocket message handlers
+
+  onStartup: function() {
+
+    // Enable tooltips
+    //$('[data-toggle="tooltip"]').tooltip()
+
+    //$('#InfoPanelCloseBtn').click(function(e) {
+    //  $('#InfoPanel').modal('hide');
+    //});
+
+    EWD.getFragment('login.html', 'loginPanel'); 
+    EWD.getFragment('navlist.html', 'navList'); 
+    EWD.getFragment('infoPanel.html', 'infoPanel'); 
+    EWD.getFragment('confirm.html', 'confirmPanel'); 
+    EWD.getFragment('main.html', 'main_Container'); 
+
+  },
+
+  onPageSwap: {
+    // add handlers that fire after pages are swapped via top nav menu
+    /* eg:
+    about: function() {
+      console.log('"about" menu was selected');
+    }
+    */
+  },
+
+  onFragment: {
+    // add handlers that fire after fragment contents are loaded into browser
+
+    'navlist.html': function(messageObj) {
+      EWD.bootstrap3.nav.enable();
+    },
+
+    'login.html': function(messageObj) {
+      $('#loginBtn').show();
+      $('#loginPanel').on('show.bs.modal', function() {
+        setTimeout(function() {
+          document.getElementById('username').focus();
+        },1000);
+      });
+
+      $('#loginPanelBody').keydown(function(event){
+        if (event.keyCode === 13) {
+          document.getElementById('loginBtn').click();
+        }
+      });
+    }
+
+  },
+
+  onMessage: {
+
+    // add handlers that fire after JSON WebSocket messages are received from back-end
+
+    loggedIn: function(messageObj) {
+      toastr.options.target = 'body';
+      $('#main_Container').show();
+      $('#mainPageTitle').text('Welcome to VistA, ' + messageObj.message.name);
+    }
   }
+
 };
+
+
 
 
 

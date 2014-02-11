@@ -1,4 +1,4 @@
-// 10 February 2014
+// 11 February 2014
 
 EWD.bootstrap3 = {
   createMenu: function() {
@@ -25,6 +25,24 @@ EWD.bootstrap3 = {
       }
       EWD.application.menuCreated = true;
     }
+  },
+
+  enableSelect2: function() {
+    $('#patientSelectionFormBody').css("overflow-y","visible");
+    $("#selectedPatient").select2({
+      minimumInputLength: 1,
+      query: function (query) {
+        EWD.application.select2 = {
+          callback: query.callback,
+        };
+        EWD.sockets.sendMessage({
+          type: 'patientQuery',
+          params: {
+            prefix: query.term
+          }
+        });
+      }
+    });
   },
 
   /* navigation functionality
@@ -72,7 +90,7 @@ EWD.bootstrap3 = {
           });
         }
         if (params.cache) {
-          if ($('#' + params.targetOuterId).length === 0) loadFragment(params);
+          if ($('#' + params.fragmentOuterId).length === 0) loadFragment(params);
         }
         else {
           loadFragment(params);
@@ -182,20 +200,9 @@ EWD.onSocketsReady = function() {
 
   // select2 handler that fires on each keystroke in the Select Patient panel
 
-  $("#selectedPatient").select2({
-    minimumInputLength: 1,
-    query: function (query) {
-      EWD.application.select2 = {
-        callback: query.callback,
-      };
-      EWD.sockets.sendMessage({
-        type: 'patientQuery',
-        params: {
-          prefix: query.term
-        }
-      });
-    }
-  });
+  if ($('#selectedPatient').length > 0) {
+    EWD.bootstrap3.enableSelect2();
+  }
 
   // Login form button handler
 
@@ -220,9 +227,9 @@ EWD.onSocketsReady = function() {
   });
 
   // Patient Selector Form button handler
-
   $('body').on( 'click', '#patientBtn', function(event) {
-    event.stopPropagation(); // prevent default bootstrap behavior
+    event.preventDefault();
+    //event.stopPropagation(); // prevent default bootstrap behavior
     EWD.sockets.sendMessage({
       type: 'patientSelected',
       params: {
@@ -270,7 +277,7 @@ EWD.onSocketsReady = function() {
 
   if (EWD.application.onStartup) EWD.application.onStartup();
 
-  document.getElementById('loginBtn').style.display = '';
+  if (document.getElementById('loginBtn')) document.getElementById('loginBtn').style.display = '';
 };
 
 EWD.onSocketMessage = function(messageObj) {
@@ -288,24 +295,38 @@ EWD.onSocketMessage = function(messageObj) {
 
   if (messageObj.type === 'loggedInAs') {
     // update 'logged in as ' banner in header
-    document.getElementById('ewd-loggedInAs').innerHTML = messageObj.message.fullName;
+    if (document.getElementById('ewd-loggedInAs')) {
+      document.getElementById('ewd-loggedInAs').innerHTML = messageObj.message.fullName;
+    }
     return;
   }
 
   if (messageObj.type === 'patientMatches') {
     // update patient lookup combo with matching names
-    EWD.application.select2.results = messageObj.params;
+    if (messageObj.params) {
+      EWD.application.select2.results = messageObj.params;
+    }
+    else {
+      EWD.application.select2.results = messageObj.message;
+    }
     EWD.application.select2.callback(EWD.application.select2);
     return;
   }
 
   if (messageObj.type === 'patientSelected') {
     // patient selected: remove combo and show patient panel
-    $('#topPanel').collapse('show');
-    $('#patientSelectionForm').modal('hide');
-    EWD.application.topPanelActivated = true;
-    document.getElementById('ewd-panel1-title').innerHTML = messageObj.message.patientName;
-    EWD.bootstrap3.createMenu();
+    if ($('#topPanel').length > 0) {
+      $('#topPanel').collapse('show');
+      $('#patientSelectionForm').modal('hide');
+      EWD.application.topPanelActivated = true;
+      document.getElementById('ewd-panel1-title').innerHTML = messageObj.message.patientName;
+      EWD.bootstrap3.createMenu();
+    }
+    else {
+      if (EWD.application.onMessage && EWD.application.onMessage.patientSelected) {
+        EWD.application.onMessage.patientSelected(messageObj);
+      }
+    }
     return;
   }
 

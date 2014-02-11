@@ -14,8 +14,8 @@ if (typeof CustomEvent === 'undefined') {
 
 var EWD = {
   version: {
-    build: 9,
-    date: '10 February 2014'
+    build: 10,
+    date: '11 February 2014'
   }, 
   trace: false,
   initialised: false,
@@ -32,6 +32,15 @@ var EWD = {
   insertAfter: function(html, targetId) {
     var tag = document.createElement('div');
     tag.innerHTML = html;
+  },
+  getFragment: function(file, targetId) {
+    EWD.sockets.sendMessage({
+      type: "EWD.getFragment", 
+      params:  {
+        file: file,
+        targetId: targetId
+      }
+    }); 
   },
   json2XML: function(document, tagName, xml) {
     if (!xml) xml = '';
