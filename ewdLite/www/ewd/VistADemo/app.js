@@ -68,7 +68,11 @@ EWD.application = {
 
     'patientPanel.html': function(messageObj) {
       EWD.application.activeMenu = 'patientMenu-vitals';
-      $('#patientPanelTitle').text('Patient: ' + EWD.application.patient.name);
+      var patient = EWD.application.patient;
+      var sex = 'Male';
+      if (patient.sex === 'F') sex = 'Female'
+      var title = patient.name + ' ;  DOB   ' + patient.DOB + ' (' + sex + ')';
+      $('#patientPanelTitle').text(title);
       $('.patientMenu').click(function(e) {
         e.stopPropagation();
         var id = e.currentTarget.id;
@@ -97,10 +101,7 @@ EWD.application = {
 
     patientSelected: function(messageObj) {
       $('#patientSelectionPanel').modal('hide');
-      EWD.application.patient = {
-        name: messageObj.message.patientName,
-        id: messageObj.message.patientId
-      };
+      EWD.application.patient = messageObj.message;
       if ($('#patientPanel').length > 0) $('#patientPanel').remove();
       EWD.getFragment('patientPanel.html', 'mainPageContent');
     }
