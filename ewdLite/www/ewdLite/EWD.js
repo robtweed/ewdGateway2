@@ -14,8 +14,8 @@ if (typeof CustomEvent === 'undefined') {
 
 var EWD = {
   version: {
-    build: 10,
-    date: '11 February 2014'
+    build: 11,
+    date: '13 February 2014'
   }, 
   trace: false,
   initialised: false,
@@ -290,6 +290,10 @@ var EWD = {
                     }
                     html = html + '</tbody>';
                     tableTag.innerHTML = html;
+                  }
+                  // 
+                  if (typeof EWD.application.onReplacedTables === "function") { // invoke onReplaceTables() after tables are built
+                    EWD.application.onReplacedTables();
                   }
                 }
               }
