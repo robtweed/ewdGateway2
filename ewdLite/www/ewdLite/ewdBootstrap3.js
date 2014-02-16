@@ -170,7 +170,10 @@ EWD.onSocketsReady = function() {
   }
 
   for (id in EWD.application.labels) {
-    document.getElementById(id).innerHTML = EWD.application.labels[id];
+    try {
+      document.getElementById(id).innerHTML = EWD.application.labels[id];
+    }
+    catch(err) {}
   }
   $('#loginPanel').on('show.bs.modal', function() {
     setTimeout(function() {
@@ -337,10 +340,3 @@ EWD.onSocketMessage = function(messageObj) {
   if (EWD.application.messageHandlers) EWD.application.messageHandlers(messageObj);
 
 };
-
-$(document).ready(function() {
-  EWD.isReady();
-});
-
-
-

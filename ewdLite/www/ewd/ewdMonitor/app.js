@@ -6,7 +6,7 @@ EWD.application = {
     'ewd-loginPanel-title': 'EWD.js Monitor',
     'ewd-navbar-title-phone': 'EWD.js',
     'ewd-navbar-title-other': 'EWD.js Monitor',
-    'ewd-menu-title': 'Menu',
+    'ewd-menu-title': 'Menu'
   },
   navFragments: {
     memory: {
@@ -18,7 +18,7 @@ EWD.application = {
     db: {
       cache: true
     },
-    import: {
+    importer: {
       cache: true
     },
     about: {
@@ -342,7 +342,7 @@ EWD.application = {
           type: "deleteGlobalNode", 
           params: {
             globalName: globalName,
-            subscripts: subscripts,
+            subscripts: subscripts
           }
         });
 
@@ -639,7 +639,7 @@ EWD.application = {
       });
     },
 
-    'import.html': function(messageObj) {
+    'importer.html': function(messageObj) {
       $("#json").keyup(function(e) {
         while($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css("borderTopWidth")) + parseFloat($(this).css("borderBottomWidth"))) {
           $(this).height($(this).height()+1);
@@ -872,7 +872,7 @@ EWD.application = {
 
 };
 
-//EWD.sockets.log = true;
+EWD.sockets.log = false;
 
 
 
