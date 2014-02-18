@@ -3,6 +3,7 @@ EWD.sockets.log = true;
 EWD.application = {
   name: 'VistADemo',
   timeout: 3600,
+  login: true,
   labels: {
     'ewd-title': 'VistA Demo',
     'ewd-navbar-title-phone': 'VistA Demo',

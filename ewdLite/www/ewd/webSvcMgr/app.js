@@ -1,5 +1,6 @@
 EWD.application = {
   name: 'webSvcMgr',
+  login: true,
   labels: {
     'ewd-title': 'EWD.js Web Service Manager',
     'ewd-loginPanel-title': 'EWD.js Web Service Manager',

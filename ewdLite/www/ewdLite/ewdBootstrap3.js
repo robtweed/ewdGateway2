@@ -1,4 +1,4 @@
-// 11 February 2014
+// 17 February 2014
 
 EWD.bootstrap3 = {
   createMenu: function() {
@@ -180,7 +180,7 @@ EWD.onSocketsReady = function() {
       document.getElementById('username').focus();
     },1000);
   });
-  $('#loginPanel').modal({show: true, backdrop: 'static'});
+  if (EWD.application.login) $('#loginPanel').modal({show: true, backdrop: 'static'});
 
   $('#loginPanelBody').keydown(function(event){
     if (event.keyCode === 13) {

@@ -1,5 +1,6 @@
 EWD.application = {
   name: 'ewdGDSync',
+  login: true,
   labels: {
     'ewd-title': 'EWD.js Google Drive Synchroniser',
     'ewd-loginPanel-title': 'EWD.js Google Drive Synchroniser',

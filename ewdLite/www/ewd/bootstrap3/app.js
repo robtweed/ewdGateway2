@@ -3,6 +3,7 @@ EWD.sockets.log = true;   // *** set this to false after testing / development
 EWD.application = {
   name: 'bootstrap3', // **** change to your application name
   timeout: 3600,
+  login: true,
   labels: {
     'ewd-title': 'Demo',                                     // *** Change as needed
     'ewd-navbar-title-phone': 'Demo App',                    // *** Change as needed

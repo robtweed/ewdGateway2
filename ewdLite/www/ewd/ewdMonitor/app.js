@@ -1,6 +1,7 @@
 EWD.application = {
   name: 'ewdMonitor',
   timeout: 3600,
+  login: true,
   labels: {
     'ewd-title': 'EWD.js Monitor',
     'ewd-loginPanel-title': 'EWD.js Monitor',
