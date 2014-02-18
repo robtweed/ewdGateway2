@@ -1,4 +1,4 @@
-// 17 February 2014
+// 18 February 2014
 
 EWD.bootstrap3 = {
   createMenu: function() {
@@ -57,6 +57,11 @@ EWD.bootstrap3 = {
     // swap pages from current to target
     // targetId = string ID of clicked navbar/footer link (e.g. ewd_Nav/ewd_Footer)
     pageSwap: function(targetId) {
+      if ($('#' + targetId).data('link')) {
+        var link = $('#' + targetId).data('link');
+        window.open(link);
+        return;
+      }
       var current = EWD.bootstrap3.nav.getCurrentPage();
       var target = targetId.split('_')[0];
       if (target !== current) {
@@ -66,6 +71,8 @@ EWD.bootstrap3 = {
           $('#' + target + '_Container').on('shown.bs.collapse', function() {
             EWD.bootstrap3.nav.enable();
             $('#' + target + '_Container').unbind();
+            if (EWD.application.onAfterPageSwap[target]) EWD.application.onAfterPageSwap[target]();
+            if (EWD.application.onAfterAnyPageSwap) EWD.application.onAfterAnyPageSwap();
           });
           $('#' + target + '_Container').collapse('show');
           $('#' + current + '_Container').unbind();
@@ -99,6 +106,7 @@ EWD.bootstrap3 = {
       //if (EWD.application.onPageSwap) EWD.application.onPageSwap(target);
       if (EWD.application.onPageSwap) {
         if (EWD.application.onPageSwap[target]) EWD.application.onPageSwap[target]();
+        if (EWD.application.onAnyPageSwap) EWD.application.onAnyPageSwap();
       } 
     },
     // initialise navbar & footer buttons
@@ -180,7 +188,16 @@ EWD.onSocketsReady = function() {
       document.getElementById('username').focus();
     },1000);
   });
-  if (EWD.application.login) $('#loginPanel').modal({show: true, backdrop: 'static'});
+  if (EWD.application.login) {
+    $('#loginPanel').modal({show: true, backdrop: 'static'});
+  }
+  else {
+    $('#topPanel').collapse('show');
+    EWD.application.topPanelActivated = true;
+    EWD.bootstrap3.createMenu();
+    if (typeof toastr !== 'undefined') toastr.options.target = 'body';
+    $('#main_Container').show();
+  }
 
   $('#loginPanelBody').keydown(function(event){
     if (event.keyCode === 13) {
@@ -253,7 +270,7 @@ EWD.onSocketsReady = function() {
     EWD.application.menuOptions[option].handler();
   });
 
-  if (toastr) {    
+  if (typeof toastr !== 'undefined') {    
     toastr.options = {
       positionClass: "toast-top-right",
       showDuration: 300,
