@@ -196,38 +196,43 @@ EWD.application = {
       //EWD.stopBtn = 'deleteGlobalNode';
     };
 
+    EWD.application.tree.removeDeleteButton = function() {
+      $('.tree-folder-name').off();
+      $('.tree-item-name').off();
+      EWD.application.tree.clearDeleteButton();
+    };
+
+    EWD.application.tree.clearDeleteButton = function() {
+      if ($('#xcheck').length > 0) {
+        var xtype = $('#xcheck').attr('class');
+        if (xtype === 'xfolder') {
+          text = $('#xcheck').attr('data-x-name');
+          var parNode = $('#xcheck').parent();
+          $('#xcheck').remove();
+          $(parNode).text(text);
+        }
+        if (xtype === 'xitem') {
+          var nodeSubscript = $('#xcheck').attr('data-x-name');
+          var nodeValue = $('#xcheck').attr('data-x-value');
+          var parNode = $('#xcheck').parent();
+          $('#xcheck').remove();
+          $(parNode).html(nodeSubscript + '<span>: </span>' + nodeValue);
+        }
+      }
+    };
+
     EWD.application.tree.addDeleteButton = function() {
       var text;
       var nodeSubscript;
       var nodeValue;
       EWD.mouseIn = false;
 
-      var clearButton = function() {
-          if ($('#xcheck').length > 0) {
-            var xtype = $('#xcheck').attr('class');
-            if (xtype === 'xfolder') {
-              text = $('#xcheck').attr('data-x-name');
-              var parNode = $('#xcheck').parent();
-              $('#xcheck').remove();
-              $(parNode).text(text);
-            }
-            if (xtype === 'xitem') {
-              var nodeSubscript = $('#xcheck').attr('data-x-name');
-              var nodeValue = $('#xcheck').attr('data-x-value');
-              var parNode = $('#xcheck').parent();
-              $('#xcheck').remove();
-              $(parNode).html(nodeSubscript + '<span>: </span>' + nodeValue);
-            }
-          }
-      };
-
-
       setTimeout(function() {
         $('.tree-folder-name').hover(function(e) {
           e.stopPropagation();
           if (EWD.mouseIn) return;
           EWD.mouseIn = true;
-          clearButton();
+          EWD.application.tree.clearDeleteButton();
           text = $(this).text().trim();
           //$(this).html('<div class="checkbox" id="xcheck"><label id="xcheckText">' + text + '<input type="checkbox" name="xxx" /></label></div>');
           $(this).html('<div id="xcheck" class="xfolder" data-x-name="' + text + '">' + text + '&nbsp;&nbsp;<button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Delete this node and its children"><span class="glyphicon glyphicon-remove"></span></button></div>');
@@ -251,7 +256,7 @@ EWD.application = {
           });
           $('#xcheck').on('mouseleave', function(evt) {
             evt.stopPropagation();
-            clearButton();
+            EWD.application.tree.clearDeleteButton();
           });
           EWD.mouseIn = false;
         });
@@ -260,7 +265,7 @@ EWD.application = {
           e.stopPropagation();
           if (EWD.mouseIn) return;
           EWD.mouseIn = true;
-          clearButton();
+          EWD.application.tree.clearDeleteButton();
           text = $(this).html();
           nodeSubscript = text.split('<span>')[0];
           nodeValue = text.split('</span>')[1];
@@ -287,7 +292,7 @@ EWD.application = {
           });
           $('#xcheck').on('mouseleave', function(evt) {
             evt.stopPropagation();
-            clearButton();
+            EWD.application.tree.clearDeleteButton();
           });
           EWD.mouseIn = false;
         });
@@ -630,6 +635,7 @@ EWD.application = {
     'db.html': function(messageObj) {
       $('[data-toggle="tooltip"]').tooltip();
       $('#dbTreePanel').height($(window).height() - 200);
+      $('#dbDisableDeleteBtn').hide();
       EWD.sockets.sendMessage({
         type: 'getGlobals'
       });
@@ -637,6 +643,16 @@ EWD.application = {
         EWD.sockets.sendMessage({
           type: 'getGlobals'
         });
+      });
+      $('#dbEnableDeleteBtn').on('click', function(e) {
+        EWD.application.tree.addDeleteButton();
+        $('#dbDisableDeleteBtn').show();
+        $('#dbEnableDeleteBtn').hide();
+      });
+      $('#dbDisableDeleteBtn').on('click', function(e) {
+        EWD.application.tree.removeDeleteButton();
+        $('#dbDisableDeleteBtn').hide();
+        $('#dbEnableDeleteBtn').show();
       });
     },
 
@@ -664,121 +680,196 @@ EWD.application = {
   onMessage: {
 
     childProcessMemory: function(messageObj) {
-      //{"type":"childProcessMemory","results":{"rss":"37.43","heapTotal":"28.53","heapUsed":"3.55","pid":4848},"interval":30000} 
-      if (EWD.memory['cpPid' + messageObj.results.pid]) {
-        EWD.memory['cpPid' + messageObj.results.pid] = messageObj.results;
-        if ($('#cpPid' + messageObj.results.pid + 'rss')) {
-          $('#cpPid' + messageObj.results.pid + 'rss').text(messageObj.results.rss);
-          $('#cpPid' + messageObj.results.pid + 'heapTotal').text(messageObj.results.heapTotal);
-          $('#cpPid' + messageObj.results.pid + 'heapUsed').text(messageObj.results.heapUsed);
+      if (EWD.application.loggedIn) {
+        //{"type":"childProcessMemory","results":{"rss":"37.43","heapTotal":"28.53","heapUsed":"3.55","pid":4848},"interval":30000} 
+        if (EWD.memory['cpPid' + messageObj.results.pid]) {
+          EWD.memory['cpPid' + messageObj.results.pid] = messageObj.results;
+          if ($('#cpPid' + messageObj.results.pid + 'rss')) {
+            $('#cpPid' + messageObj.results.pid + 'rss').text(messageObj.results.rss);
+            $('#cpPid' + messageObj.results.pid + 'heapTotal').text(messageObj.results.heapTotal);
+            $('#cpPid' + messageObj.results.pid + 'heapUsed').text(messageObj.results.heapUsed);
+          }
+          EWD.memory.plot['cpPid' + messageObj.results.pid].push(messageObj.results);
+          if (EWD.memory.plot['cpPid' + messageObj.results.pid].length > 60) EWD.memory.plot['cpPid' + messageObj.results.pid].shift();
+          if (EWD.currentGraph === ('cpPid' + messageObj.results.pid)) EWD.replotGraph(EWD.currentGraph);
         }
-        EWD.memory.plot['cpPid' + messageObj.results.pid].push(messageObj.results);
-        if (EWD.memory.plot['cpPid' + messageObj.results.pid].length > 60) EWD.memory.plot['cpPid' + messageObj.results.pid].shift();
-        if (EWD.currentGraph === ('cpPid' + messageObj.results.pid)) EWD.replotGraph(EWD.currentGraph);
       }
     },
 
     consoleText: function(messageObj) {
-      var html = '<div>' + messageObj.text + '</div>';
-      $('#consoleText').append(html);
-      $("#consoleText").animate({ scrollTop: $('#consoleText')[0].scrollHeight}, 5);
-      if ($("#consoleText").children().size() > (EWD.maxConsoleLength || 1000)) {
-        $('#consoleText').find('div:first').remove();
+      if (EWD.application.loggedIn) {
+        var html = '<div>' + messageObj.text + '</div>';
+        $('#consoleText').append(html);
+        $("#consoleText").animate({ scrollTop: $('#consoleText')[0].scrollHeight}, 5);
+        if ($("#consoleText").children().size() > (EWD.maxConsoleLength || 1000)) {
+          $('#consoleText').find('div:first').remove();
+        }
       }
     },
 
     getGlobals: function(messageObj) {
-      $('.tree-example').remove();
-      EWD.application.messageObj = messageObj;
-      EWD.sockets.sendMessage({
-        type: "EWD.getFragment", 
-        params:  {
-          file: 'tree.html',
-          targetId: 'dbTreePanel'
-        }
-      });
-    },
-
-    getGlobalSubscripts: function(messageObj) {
-      if (messageObj.message.rootLevel) {
+      if (EWD.application.loggedIn) {
         $('.tree-example').remove();
         EWD.application.messageObj = messageObj;
         EWD.sockets.sendMessage({
           type: "EWD.getFragment", 
           params:  {
             file: 'tree.html',
-            targetId: 'sessionDataTree'
+            targetId: 'dbTreePanel'
           }
         });
       }
-      else {
-        EWD.application.tree.callback({data: messageObj.message.subscripts});
-        EWD.application.tree.addDeleteButton();
+    },
+
+    getGlobalSubscripts: function(messageObj) {
+      if (EWD.application.loggedIn) {
+        if (messageObj.message.rootLevel) {
+          $('.tree-example').remove();
+          EWD.application.messageObj = messageObj;
+          EWD.sockets.sendMessage({
+            type: "EWD.getFragment", 
+            params:  {
+              file: 'tree.html',
+              targetId: 'sessionDataTree'
+            }
+          });
+        }
+        else {
+          EWD.application.tree.callback({data: messageObj.message.subscripts});
+          //EWD.application.tree.addDeleteButton();
+        }
       }
     },
 
     getInterfaceVersion: function(messageObj) {
-      var pieces = messageObj.message.split(';');
-      $('#buildVersion-iface').text(pieces[0]);
-      $('#buildVersion-db').text(pieces[1]);
+      if (EWD.application.loggedIn) {
+        var pieces = messageObj.message.split(';');
+        $('#buildVersion-iface').text(pieces[0]);
+        $('#buildVersion-db').text(pieces[1]);
+      }
     },
 
     getSessionData: function(messageObj) {
-      //console.log("**** session data: " + JSON.stringify(messageObj));
+      if (EWD.application.loggedIn) {
+        //console.log("**** session data: " + JSON.stringify(messageObj));
+      }
     },
 
-    getSessions: function(messageObj) {
-      var html = '';
-      var session;
-      for (var i = 0; i < messageObj.message.length; i++) {
-        session = messageObj.message[i];
+    sessionDeleted: function(messageObj) {
+      if (EWD.application.loggedIn) {
+        var sessid = messageObj.json.sessid;
+        if ($('#session-table-row-' + sessid).length > 0) {
+          toastr.warning('EWD Session ' + sessid + ' has been terminated');
+          $('#session-table-row-' + sessid).remove();
+        }
+      }
+    },
+
+    newSession: function(messageObj) {
+      if (EWD.application.loggedIn) {
+        var session = messageObj.json;
+        var html = '';
         html = html + '<tr class="table" id="session-table-row-' + session.sessid + '">';
         html = html + '<td>' + session.sessid + '</td>';
         html = html + '<td>' + session.appName + '</td>';
         html = html + '<td>' + session.expiry + '</td>';
         html = html + '<td><button class="btn btn-info pull-right sessionDetails" type="button" id="sessionDetailsBtn' + session.sessid + '" data-toggle="tooltip" data-placement="top" title="" data-original-title="Display Session Data"><span class="glyphicon glyphicon-open"></span></button></td>';
-        if (!session.currentSession) {
-          html = html + '<td><button class="btn btn-danger pull-right sessionStop" type="button" id="sessionStopBtn' + session.sessid + '" data-toggle="tooltip" data-placement="top" title="" data-original-title="Stop Session"><span class="glyphicon glyphicon-remove"></span></button></td>';
-        }
+        html = html + '<td><button class="btn btn-danger pull-right sessionStop" type="button" id="sessionStopBtn' + session.sessid + '" data-toggle="tooltip" data-placement="top" title="" data-original-title="Stop Session"><span class="glyphicon glyphicon-remove"></span></button></td>';
         html = html + '</tr>';
-      }
-      $('#session-table tbody').html(html);
-      $('.sessionStop').on('click', function(e) {
-        var id = e.target.id;
-        if (!id) id = e.target.parentNode.id;
-        var sessid = id.split('sessionStopBtn')[1];
+        $('#session-table tbody').append(html);
+        $('.sessionStop').on('click', function(e) {
+          var id = e.target.id;
+          if (!id) id = e.target.parentNode.id;
+          var sessid = id.split('sessionStopBtn')[1];
+          EWD.sockets.sendMessage({
+            type: 'closeSession', 
+            params: {
+              sessid: sessid
+            }
+          });
+          //$('#session-table-row-' + sessid).remove();
+          //toastr.clear();
+          //toastr.warning('EWD Session ' + sessid + ' has been stopped');
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $('.sessionDetails').on('click', function(e) {
+          //console.log("getSessionDetails!");
+          var id = e.target.id;
+          if (!id) id = e.target.parentNode.id;
+          var sessid = id.split('sessionDetailsBtn')[1];
+          EWD.getGlobalSubscripts({
+            rootLevel: true,
+            sessid: sessid,
+            operation: 'sessionData',
+            globalName: '%zewdSession',
+            subscripts: ['session', sessid]
+          });
+        });
+        toastr.info('New Session ' + session.sessid + ' has started');
         EWD.sockets.sendMessage({
-          type: 'closeSession', 
-          params: {
-            sessid: sessid
+          type: 'keepAlive'
+        });
+      }
+    },
+
+    getSessions: function(messageObj) {
+      if (EWD.application.loggedIn) {
+        var html = '';
+        var session;
+        for (var i = 0; i < messageObj.message.length; i++) {
+          session = messageObj.message[i];
+          html = html + '<tr class="table" id="session-table-row-' + session.sessid + '">';
+          html = html + '<td>' + session.sessid + '</td>';
+          html = html + '<td>' + session.appName + '</td>';
+          html = html + '<td>' + session.expiry + '</td>';
+          html = html + '<td><button class="btn btn-info pull-right sessionDetails" type="button" id="sessionDetailsBtn' + session.sessid + '" data-toggle="tooltip" data-placement="top" title="" data-original-title="Display Session Data"><span class="glyphicon glyphicon-open"></span></button></td>';
+          if (!session.currentSession) {
+            html = html + '<td><button class="btn btn-danger pull-right sessionStop" type="button" id="sessionStopBtn' + session.sessid + '" data-toggle="tooltip" data-placement="top" title="" data-original-title="Stop Session"><span class="glyphicon glyphicon-remove"></span></button></td>';
           }
+          html = html + '</tr>';
+        }
+        $('#session-table tbody').html(html);
+        $('.sessionStop').on('click', function(e) {
+          var id = e.target.id;
+          if (!id) id = e.target.parentNode.id;
+          var sessid = id.split('sessionStopBtn')[1];
+          EWD.sockets.sendMessage({
+            type: 'closeSession', 
+            params: {
+              sessid: sessid
+            }
+          });
+          //$('#session-table-row-' + sessid).remove();
+          //toastr.clear();
+          //toastr.warning('EWD Session ' + sessid + ' has been stopped');
         });
-        $('#session-table-row-' + sessid).remove();
-        toastr.clear();
-        toastr.warning('EWD Session ' + sessid + ' has been stopped');
-      });
+ 
+        $('[data-toggle="tooltip"]').tooltip();
 
-      $('[data-toggle="tooltip"]').tooltip();
-
-      $('.sessionDetails').on('click', function(e) {
-        //console.log("getSessionDetails!");
-        var id = e.target.id;
-        if (!id) id = e.target.parentNode.id;
-        var sessid = id.split('sessionDetailsBtn')[1];
-        EWD.getGlobalSubscripts({
-          rootLevel: true,
-          sessid: sessid,
-          operation: 'sessionData',
-          globalName: '%zewdSession',
-          subscripts: ['session', sessid]
+        $('.sessionDetails').on('click', function(e) {
+          //console.log("getSessionDetails!");
+          var id = e.target.id;
+          if (!id) id = e.target.parentNode.id;
+          var sessid = id.split('sessionDetailsBtn')[1];
+          EWD.getGlobalSubscripts({
+            rootLevel: true,
+            sessid: sessid,
+            operation: 'sessionData',
+            globalName: '%zewdSession',
+            subscripts: ['session', sessid]
+          });
         });
-      });
+      }
     },
 
     importJSON: function(messageObj) {
-      if (messageObj.ok) {
-        toastr.clear();
-        toastr.success('JSON successfully saved in ' + messageObj.globalName);
+      if (EWD.application.loggedIn) {
+        if (messageObj.ok) {
+          //toastr.clear();
+          toastr.success('JSON successfully saved in ' + messageObj.globalName);
+        }
       }
     },
 
@@ -788,85 +879,92 @@ EWD.application = {
       EWD.password = $('#username').val();
       EWD.sockets.sendMessage({type: "EWD.startConsole", message:  "start", password: EWD.password});
       EWD.sockets.sendMessage({type: "getInterfaceVersion"});
+      EWD.application.loggedIn = true;
     },
 
     memory: function(messageObj) {
-      EWD.memory.master = messageObj;
-      if ($('#master-rss')) {
-        $('#master-rss').text(messageObj.rss);
-        $('#master-heapTotal').text(messageObj.heapTotal);
-        $('#master-heapUsed').text(messageObj.heapUsed);
+      if (EWD.application.loggedIn) {
+        EWD.memory.master = messageObj;
+        if ($('#master-rss')) {
+          $('#master-rss').text(messageObj.rss);
+          $('#master-heapTotal').text(messageObj.heapTotal);
+          $('#master-heapUsed').text(messageObj.heapUsed);
+        }
+        EWD.memory.plot.master.push({
+          rss: messageObj.rss,
+          heapTotal: messageObj.heapTotal,
+          heapUsed: messageObj.heapUsed
+        });
+        if (EWD.memory.plot.master.length > 60) EWD.memory.plot.master.shift();
+        if (EWD.currentGraph) EWD.replotGraph(EWD.currentGraph);
       }
-      EWD.memory.plot.master.push({
-        rss: messageObj.rss,
-        heapTotal: messageObj.heapTotal,
-        heapUsed: messageObj.heapUsed
-      });
-      if (EWD.memory.plot.master.length > 60) EWD.memory.plot.master.shift();
-      if (EWD.currentGraph) EWD.replotGraph(EWD.currentGraph);
-    },
-
-    newSession: function(messageObj) {
-      console.log("**** new session: " + JSON.stringify(messageObj));
     },
 
     pidUpdate: function(messageObj) {
-      var pid = messageObj.pid;
-      $('#cpRequests' + pid).text(messageObj.noOfRequests);
-      $('#cpAvailable' + pid).text(messageObj.available);
+      if (EWD.application.loggedIn) {
+        var pid = messageObj.pid;
+        $('#cpRequests' + pid).text(messageObj.noOfRequests);
+        $('#cpAvailable' + pid).text(messageObj.available);
+      }
     },
 
     processInfo: function(messageObj) {
-      var data = messageObj.data;
-      EWD.application.traceLevel = data.traceLevel;
-      EWD.application.logTo = data.logTo;
-      EWD.application.logFile = data.logFile;
-      EWD.application.interval = data.interval;
-      $('#buildVersion-Node').text(data.nodeVersion);
-      $('#buildVersion-ewdgateway2').text(data.build);
-      $('#buildVersion-ewdQ').text(data.ewdQBuild);
-      $('#buildVersion-EWD').text('EWD.js');
-      $('#mainProcess-pid').text(data.masterProcess);
-      var childProcesses = messageObj.data.childProcesses;
-      var html = '';
-      var childProcess;
-      var pid;
-      for (var i = 0; i < childProcesses.length; i++) {
-        childProcess = childProcesses[i];
-        pid = childProcess.pid;
-        html = html + '<tr class="table" id="cpRow' + pid + '">';
-        html = html + '<td class="cpPid" id="cpPid' + pid + '">' + pid + '</td>';
-        html = html + '<td id="cpRequests' + pid + '">' + childProcess.noOfRequests + '</td>';
-        html = html + '<td id="cpAvailable' + pid + '">' + childProcess.available + '</td>';
-        //html = html + '<td><button class="btn btn-danger pull-right cpStop" type="button" id="cpStopBtn' + pid + '">Stop</button></td>';
-        html = html + '<td><button class="btn btn-danger pull-right cpStop" type="button" id="cpStopBtn' + pid + '" data-toggle="tooltip" data-placement="top" title="" data-original-title="Stop Child Process"><span class="glyphicon glyphicon-remove"></span></button></td>';
-        html = html + '</tr>';
-        EWD.memory['cpPid' + pid] = {
-          rss: 'Not yet available',
-          heapTotal: 'Not yet available',
-          heapUsed: 'Not yet available'
+      if (EWD.application.loggedIn) {
+        var data = messageObj.data;
+        EWD.application.traceLevel = data.traceLevel;
+        EWD.application.logTo = data.logTo;
+        EWD.application.logFile = data.logFile;
+        EWD.application.interval = data.interval;
+        $('#buildVersion-Node').text(data.nodeVersion);
+        $('#buildVersion-ewdgateway2').text(data.build);
+        $('#buildVersion-ewdQ').text(data.ewdQBuild);
+        $('#buildVersion-EWD').text('EWD.js');
+        $('#mainProcess-pid').text(data.masterProcess);
+        var childProcesses = messageObj.data.childProcesses;
+        var html = '';
+        var childProcess;
+        var pid;
+        for (var i = 0; i < childProcesses.length; i++) {
+          childProcess = childProcesses[i];
+          pid = childProcess.pid;
+          html = html + '<tr class="table" id="cpRow' + pid + '">';
+          html = html + '<td class="cpPid" id="cpPid' + pid + '">' + pid + '</td>';
+          html = html + '<td id="cpRequests' + pid + '">' + childProcess.noOfRequests + '</td>';
+          html = html + '<td id="cpAvailable' + pid + '">' + childProcess.available + '</td>';
+          //html = html + '<td><button class="btn btn-danger pull-right cpStop" type="button" id="cpStopBtn' + pid + '">Stop</button></td>';
+          html = html + '<td><button class="btn btn-danger pull-right cpStop" type="button" id="cpStopBtn' + pid + '" data-toggle="tooltip" data-placement="top" title="" data-original-title="Stop Child Process"><span class="glyphicon glyphicon-remove"></span></button></td>';
+          html = html + '</tr>';
+          EWD.memory['cpPid' + pid] = {
+            rss: 'Not yet available',
+            heapTotal: 'Not yet available',
+            heapUsed: 'Not yet available'
+          }
+          EWD.memory.plot['cpPid' + pid] = [];
         }
-        EWD.memory.plot['cpPid' + pid] = [];
+        $('#childProcessTable tbody').html(html);
+        EWD.enablePopovers();
+        $('[data-toggle="tooltip"]').tooltip();
       }
-      $('#childProcessTable tbody').html(html);
-      EWD.enablePopovers();
-      $('[data-toggle="tooltip"]').tooltip();
     },
 
     queueInfo: function(messageObj) {
-      $('#masterProcess-qLength').text(messageObj.qLength);
-      if (messageObj.qLength > EWD.qMax) {
-        EWD.qMax = messageObj.qLength;
-        $('#masterProcess-max').text(messageObj.qLength);
+      if (EWD.application.loggedIn) {
+        $('#masterProcess-qLength').text(messageObj.qLength);
+        if (messageObj.qLength > EWD.qMax) {
+          EWD.qMax = messageObj.qLength;
+          $('#masterProcess-max').text(messageObj.qLength);
+        }
       }
     },
 
     workerProcess: function(messageObj) {
-      if (messageObj.action === 'add') {
-        var html = EWD.addChildProcessToTable(messageObj.pid);
-        $('#childProcessTable tbody').append(html);
-        EWD.enablePopovers();
-        $('[data-toggle="tooltip"]').tooltip();
+      if (EWD.application.loggedIn) {
+        if (messageObj.action === 'add') {
+          var html = EWD.addChildProcessToTable(messageObj.pid);
+          $('#childProcessTable tbody').append(html);
+          EWD.enablePopovers();
+          $('[data-toggle="tooltip"]').tooltip();
+        }
       }
     }
   }

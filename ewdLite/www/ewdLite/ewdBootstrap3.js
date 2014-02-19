@@ -1,4 +1,4 @@
-// 18 February 2014
+// 19 February 2014
 
 EWD.bootstrap3 = {
   createMenu: function() {
@@ -71,8 +71,8 @@ EWD.bootstrap3 = {
           $('#' + target + '_Container').on('shown.bs.collapse', function() {
             EWD.bootstrap3.nav.enable();
             $('#' + target + '_Container').unbind();
-            if (EWD.application.onAfterPageSwap[target]) EWD.application.onAfterPageSwap[target]();
-            if (EWD.application.onAfterAnyPageSwap) EWD.application.onAfterAnyPageSwap();
+            if (EWD.application.onAfterPageSwap && EWD.application.onAfterPageSwap[target]) EWD.application.onAfterPageSwap[target]();
+            if (EWD.application.onAfterAnyPageSwap && EWD.application.onAfterAnyPageSwap) EWD.application.onAfterAnyPageSwap();
           });
           $('#' + target + '_Container').collapse('show');
           $('#' + current + '_Container').unbind();
