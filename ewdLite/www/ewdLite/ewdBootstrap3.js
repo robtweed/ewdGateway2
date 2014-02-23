@@ -110,9 +110,12 @@ EWD.bootstrap3 = {
       } 
     },
     // initialise navbar & footer buttons
-    enable: function() {
+    enable: function(ttopt) {
       if ($('#navList')) {
         $('#navList').children().each(function() { // add listener to each navbar button
+          if ($(this).data('toggle') === 'tooltip') {
+            $(this).tooltip(ttopt);
+          }
           $('#' + this.id).on('click', function() {
             EWD.bootstrap3.nav.pageSwap(this.id);
           });
@@ -130,6 +133,9 @@ EWD.bootstrap3 = {
     disable: function() {
       if ($('#navList')) {
         $('#navList').children().each(function() {
+          if ($(this).data('toggle') === 'tooltip') {
+            $(this).tooltip('destroy');
+          }
           $('#' + this.id).unbind();
         });
       }

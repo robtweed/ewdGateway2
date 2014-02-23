@@ -20,7 +20,3 @@ EWD.onSocketsReady = function() {
   });
   window.close();
 };
-
-$(document).ready(function() {
-  EWD.isReady();
-});

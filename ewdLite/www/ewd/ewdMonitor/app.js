@@ -403,6 +403,16 @@ EWD.application = {
 
     EWD.stopBtn = false;
 
+    EWD.keepAlive = function() {
+      setTimeout(function() {
+        EWD.sockets.sendMessage({
+          type: 'keepAlive'
+        });
+      },3400000);
+    };
+
+    EWD.keepAlive();
+
   },
 
   onPageSwap: {
@@ -966,12 +976,15 @@ EWD.application = {
           $('[data-toggle="tooltip"]').tooltip();
         }
       }
+    },
+
+    keepAlive: function(messageObj) {
+      EWD.keepAlive();
     }
   }
 
 };
 
-EWD.sockets.log = false;
 
 
 
