@@ -1,4 +1,5 @@
 EWD.sockets.log = true;
+EWD.VistATerminalPort = 8081;
 
 EWD.application = {
   name: 'VistADemo',
@@ -11,6 +12,9 @@ EWD.application = {
   },
   navFragments: {
     main: {
+      cache: true
+    },
+    terminal: {
       cache: true
     },
     about: {
@@ -85,6 +89,11 @@ EWD.application = {
           $('#patientDataPanel').text('Patient Vitals Go Here');
         }
       });
+    },
+
+    'terminal.html': function(messageObj) {
+      var url = 'https://' + $(location).attr('hostname') + ':' + EWD.VistATerminalPort + '/ewdVistATerm/term.html';
+      $('#terminalFrame').attr('src', url);
     }
 
   },
