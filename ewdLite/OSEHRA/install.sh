@@ -9,7 +9,7 @@ sudo ./autoInstaller.sh -e
 
 
 cd ~
-sudo apt-get install sshpass
+sudo apt-get install -y sshpass
 
 # On EC2 machines:
 # Edit /etc/ssh/sshd_config and set PasswordAuthentication to yes.
