@@ -125,13 +125,6 @@ EWD.application = {
 
   onStartup: function() {
 
-    // Enable tooltips
-    //$('[data-toggle="tooltip"]').tooltip()
-
-    //$('#InfoPanelCloseBtn').click(function(e) {
-    //  $('#InfoPanel').modal('hide');
-    //});
-
     EWD.getFragment('login.html', 'loginPanel'); 
     EWD.getFragment('navlist.html', 'navList'); 
     EWD.getFragment('main.html', 'main_Container'); 
@@ -141,16 +134,9 @@ EWD.application = {
   },
 
   onPageSwap: {
-    // add handlers that fire after pages are swapped via top nav menu
-    /* eg:
-    about: function() {
-      console.log('"about" menu was selected');
-    }
-    */
   },
 
   onFragment: {
-    // add handlers that fire after fragment contents are loaded into browser
 
     'navlist.html': function(messageObj) {
       EWD.bootstrap3.nav.enable();
@@ -247,12 +233,9 @@ EWD.application = {
 
   onMessage: {
 
-    // add handlers that fire after JSON WebSocket messages are received from back-end
-
     loggedIn: function(messageObj) {
       toastr.options.target = 'body';
       $('#main_Container').show();
-      $('#mainPageTitle').text('Welcome to the EWD.js Chromecast Demonstration, ' + messageObj.message.name);
     }
   }
 
