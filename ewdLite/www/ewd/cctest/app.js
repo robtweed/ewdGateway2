@@ -6,9 +6,9 @@ EWD.application = {
   chromecast: true,
   login: false,
   labels: {
-    'ewd-title': 'Demo',                                     // *** Change as needed
-    'ewd-navbar-title-phone': 'Demo App',                    // *** Change as needed
-    'ewd-navbar-title-other': 'Demonstration Application'    // *** Change as needed
+    'ewd-title': 'Demo', 
+    'ewd-navbar-title-phone': 'Demo App',
+    'ewd-navbar-title-other': 'Demonstration Application'
   },
   navFragments: {
     main: {
@@ -23,20 +23,12 @@ EWD.application = {
   onStartup: function() {
     EWD.getFragment('navlist.html', 'navList');
     EWD.getFragment('main.html', 'main_Container');
-    console.log('started');
   },
 
   onPageSwap: {
-    // add handlers that fire after pages are swapped via top nav menu
-    /* eg:
-    about: function() {
-      console.log('"about" menu was selected');
-    }
-    */
   },
 
   onFragment: {
-    // add handlers that fire after fragment contents are loaded into browser
 
     'navlist.html': function(messageObj) {
       EWD.bootstrap3.nav.enable();
@@ -44,14 +36,6 @@ EWD.application = {
   },
 
   onMessage: {
-
-    // add handlers that fire after JSON WebSocket messages are received from back-end
-
-    loggedIn: function(messageObj) {
-      toastr.options.target = 'body';
-      $('#main_Container').show();
-      $('#mainPageTitle').text('Welcome to VistA, ' + messageObj.message.name);
-    }
   }
 
 };
