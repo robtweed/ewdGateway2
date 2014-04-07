@@ -1,4 +1,4 @@
-// 23 February 2014
+// 7 April 2014
 
 EWD.bootstrap3 = {
   createMenu: function() {
@@ -195,14 +195,16 @@ EWD.onSocketsReady = function() {
     },1000);
   });
   if (EWD.application.login) {
-    $('#loginPanel').modal({show: true, backdrop: 'static'});
+    if ($('#loginPanel').length > 0) $('#loginPanel').modal({show: true, backdrop: 'static'});
   }
   else {
-    $('#topPanel').collapse('show');
-    EWD.application.topPanelActivated = true;
+    if ($('#topPanel').length > 0) {
+      $('#topPanel').collapse('show');
+      EWD.application.topPanelActivated = true;
+    }
     EWD.bootstrap3.createMenu();
     if (typeof toastr !== 'undefined') toastr.options.target = 'body';
-    $('#main_Container').show();
+    if ($('#main_Container').length > 0) $('#main_Container').show();
   }
 
   $('#loginPanelBody').keydown(function(event){
@@ -289,7 +291,7 @@ EWD.onSocketsReady = function() {
     };
   }
   else {
-    $('#loginBtn').popover({
+    if ($('#loginBtn').length > 0) $('#loginBtn').popover({
       title: 'Error',
       content: 'Testing',
       placement: 'top',

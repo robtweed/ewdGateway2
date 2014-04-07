@@ -1,7 +1,7 @@
 var EWD = {
   version: {
-    build: 12,
-    date: '17 February 2014'
+    build: 13,
+    date: '7 April 2014'
   }, 
   trace: false,
   initialised: false,
@@ -173,6 +173,24 @@ var EWD = {
 };
 
 $(document).ready( function() {
+
+  if (EWD.application && EWD.application.chromecast) {
+    EWD.application.parentOrigin = 'https://ec2.mgateway.com:8080';
+    window.addEventListener('message', function(e) {
+      var message = e.data;
+      //if (EWD.sockets.log) console.log("*** message received from Receiver parent: " + JSON.stringify(message) + ': origin = ' + e.origin);
+      if (e.origin === EWD.application.parentOrigin) {
+        var type = message.message.type;
+        if (typeof EWD.chromecast.onMessage !== 'undefined' && EWD.chromecast.onMessage[type]) {
+          EWD.chromecast.onMessage[type](message);
+        }
+      }
+    });
+    EWD.chromecast.sendMessage = function(message) {
+      window.parent.postMessage(message, EWD.application.parentOrigin);
+    }
+  }
+
   var socket = io.connect();
   /*
   socket.on('connect', function() {
